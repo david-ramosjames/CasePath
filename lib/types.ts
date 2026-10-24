@@ -1,0 +1,28 @@
+export type Lang = "en" | "es";
+
+export type Stage = {
+  id: string;
+  sortOrder: number;
+  labelEn: string;
+  labelEs: string;
+  optional: boolean;
+};
+
+export type Video = {
+  id: string;
+  slug: string;
+  stageId: string;
+  automationId: string | null;
+  titleEn: string;
+  titleEs: string;
+  introEn: string;
+  introEs: string;
+  youtubeUrlEn: string | null;
+  youtubeUrlEs: string | null;
+  takeawaysEn: string[];
+  takeawaysEs: string[];
+  nextStepsEn: string;
+  nextStepsEs: string;
+  sortOrder: number;
+  published: boolean;
+};
