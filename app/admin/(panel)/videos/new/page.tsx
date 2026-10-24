@@ -4,9 +4,9 @@ import { listStages } from "@/lib/content";
 export default async function NewVideoPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; stage?: string }>;
 }) {
-  const { error } = await searchParams;
+  const { error, stage } = await searchParams;
   const stages = await listStages();
-  return <VideoForm stages={stages} error={error} />;
+  return <VideoForm stages={stages} error={error} defaultStage={stage} />;
 }

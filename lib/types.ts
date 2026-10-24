@@ -6,6 +6,23 @@ export type Stage = {
   labelEn: string;
   labelEs: string;
   optional: boolean;
+  headerEn: string;
+  headerEs: string;
+  introEn: string;
+  introEs: string;
+  youtubeUrlEn: string | null;
+  youtubeUrlEs: string | null;
+  imageUrlEn: string | null;
+  imageUrlEs: string | null;
+  takeawaysEn: string[];
+  takeawaysEs: string[];
+  nextStepsEn: string;
+  nextStepsEs: string;
+};
+
+export type Brand = {
+  logoUrl: string;
+  firmName: string;
 };
 
 export type Video = {
@@ -19,6 +36,8 @@ export type Video = {
   introEs: string;
   youtubeUrlEn: string | null;
   youtubeUrlEs: string | null;
+  imageUrlEn: string | null;
+  imageUrlEs: string | null;
   takeawaysEn: string[];
   takeawaysEs: string[];
   nextStepsEn: string;

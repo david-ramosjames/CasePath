@@ -1,14 +1,17 @@
-import type { Lang, Stage, Video } from "@/lib/types";
+import { FirmHeader } from "@/components/FirmHeader";
+import { MediaFrame } from "@/components/MediaFrame";
+import type { Brand, Lang, Stage, Video } from "@/lib/types";
 import { lines, text } from "@/lib/lang";
-import { embedUrl } from "@/lib/youtube";
 
 export function CaseView({
   lang,
+  brand,
   stages,
   videos,
   current,
 }: {
   lang: Lang;
+  brand: Brand;
   stages: Stage[];
   videos: Video[];
   current: Video;
@@ -18,82 +21,37 @@ export function CaseView({
   const intro = text(lang, current.introEn, current.introEs);
   const nextSteps = text(lang, current.nextStepsEn, current.nextStepsEs);
   const takeaways = lines(lang, current.takeawaysEn, current.takeawaysEs);
-  const source = es ? current.youtubeUrlEs || current.youtubeUrlEn : current.youtubeUrlEn || current.youtubeUrlEs;
-  const player = embedUrl(source);
+  const youtube = es ? current.youtubeUrlEs || current.youtubeUrlEn : current.youtubeUrlEn || current.youtubeUrlEs;
+  const image = es ? current.imageUrlEs || current.imageUrlEn : current.imageUrlEn || current.imageUrlEs;
   const viewingIndex = stages.findIndex((stage) => stage.id === current.stageId);
+  const stage = stages[viewingIndex];
   const related = videos
     .filter((video) => video.stageId === current.stageId && video.slug !== current.slug)
     .sort((a, b) => a.sortOrder - b.sortOrder);
-  const nextPath = `/v/${current.slug}`;
 
   return (
     <>
-      <header className="site-header">
-        <div>
-          <p className="firm-name">Ramos James Law</p>
-          <p className="product-name">CasePath</p>
-        </div>
-        <nav className="lang" aria-label={es ? "Idioma" : "Language"}>
-          <a href={`/lang?lang=en&next=${encodeURIComponent(nextPath)}`} aria-current={lang === "en" ? "page" : undefined}>
-            English
-          </a>
-          <a href={`/lang?lang=es&next=${encodeURIComponent(nextPath)}`} aria-current={lang === "es" ? "page" : undefined}>
-            Español
-          </a>
-        </nav>
-      </header>
-      <nav className="tracker" aria-label={es ? "Etapas del caso" : "Case stages"}>
-        {stages.map((stage, index) => {
-          const first = videos
-            .filter((video) => video.stageId === stage.id)
-            .sort((a, b) => a.sortOrder - b.sortOrder)[0];
-          const state = index === viewingIndex ? "active" : index < viewingIndex ? "done" : "upcoming";
-          const label = es ? stage.labelEs : stage.labelEn;
-          const className = `stage ${state}${stage.optional ? " optional" : ""}`;
-          const inner = (
-            <>
-              <span className="stage-label">{label}</span>
-              {stage.optional ? <span className="stage-note">{es ? "Solo si hace falta" : "Only if needed"}</span> : null}
-            </>
-          );
-          return first ? (
-            <a key={stage.id} className={className} href={`/v/${first.slug}`} aria-current={state === "active" ? "page" : undefined}>
-              {inner}
-            </a>
-          ) : (
-            <span key={stage.id} className={className}>
-              {inner}
-            </span>
-          );
-        })}
-      </nav>
+      <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/v/${current.slug}`} />
+      <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
       <main className="sheet">
-        <p className="eyebrow">{es ? "Este video" : "This video"}</p>
+        <p className="eyebrow">{stage ? text(lang, stage.labelEn, stage.labelEs) : es ? "Video" : "Video"}</p>
         <h1>{title}</h1>
         {intro ? <p>{intro}</p> : null}
-        {player ? (
-          <div className="player">
-            <iframe
-              src={player}
-              title={title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-        ) : (
-          <p className="fallback">
-            {es
-              ? "Este video no se puede reproducir en este momento."
-              : "This video cannot be played right now."}{" "}
-            <a href="https://www.ramosjames.com/">{es ? "Visitar Ramos James Law" : "Visit Ramos James Law"}</a>
-          </p>
-        )}
+        <MediaFrame
+          title={title}
+          youtube={youtube}
+          image={image}
+          empty={es ? "Agregue un video o una foto en el editor." : "Add a video or a photo in the editor."}
+        />
         {takeaways.length > 0 ? (
-          <ul className="takeaways">
-            {takeaways.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
+          <section>
+            <h2>{es ? "Puntos clave" : "Key points"}</h2>
+            <ul className="takeaways">
+              {takeaways.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
         ) : null}
         {nextSteps ? (
           <section className="next">
@@ -103,11 +61,14 @@ export function CaseView({
         ) : null}
         {related.length > 0 ? (
           <section className="playlist">
-            <h2>{es ? "Más en esta etapa" : "More in this stage"}</h2>
+            <h2>{es ? "Más videos en esta etapa" : "More videos in this stage"}</h2>
             <ul>
               {related.map((video) => (
                 <li key={video.slug}>
-                  <a href={`/v/${video.slug}`}>{text(lang, video.titleEn, video.titleEs)}</a>
+                  <a href={`/v/${video.slug}`}>
+                    <strong>{text(lang, video.titleEn, video.titleEs)}</strong>
+                    <span>{text(lang, video.introEn, video.introEs)}</span>
+                  </a>
                 </li>
               ))}
             </ul>
@@ -115,5 +76,38 @@ export function CaseView({
         ) : null}
       </main>
     </>
+  );
+}
+
+export function StageTracker({
+  lang,
+  stages,
+  viewingIndex,
+}: {
+  lang: Lang;
+  stages: Stage[];
+  viewingIndex: number;
+}) {
+  const es = lang === "es";
+  return (
+    <nav className="tracker" aria-label={es ? "Etapas del caso" : "Case stages"}>
+      {stages.map((stage, index) => {
+        const state = index === viewingIndex ? "active" : index < viewingIndex ? "done" : "upcoming";
+        const label = es ? stage.labelEs : stage.labelEn;
+        const className = `stage ${state}${stage.optional ? " optional" : ""}`;
+        const inner = (
+          <>
+            <span className="num">{state === "done" ? "✓" : index + 1}</span>
+            <span className="stage-label">{label}</span>
+            {stage.optional ? <span className="stage-note">{es ? "Si hace falta" : "If needed"}</span> : null}
+          </>
+        );
+        return (
+          <a key={stage.id} className={className} href={`/s/${stage.id}`} aria-current={state === "active" ? "page" : undefined}>
+            {inner}
+          </a>
+        );
+      })}
+    </nav>
   );
 }

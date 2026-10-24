@@ -1,3 +1,5 @@
+import { FirmHeader } from "@/components/FirmHeader";
+import { getBrand } from "@/lib/content";
 import { getLang } from "@/lib/lang";
 
 export const dynamic = "force-dynamic";
@@ -20,24 +22,11 @@ const copy = {
 };
 
 export default async function HomePage() {
-  const lang = await getLang();
+  const [lang, brand] = await Promise.all([getLang(), getBrand()]);
   const text = copy[lang];
   return (
     <>
-      <header className="site-header">
-        <div>
-          <p className="firm-name">Ramos James Law</p>
-          <p className="product-name">CasePath</p>
-        </div>
-        <nav className="lang" aria-label={text.language}>
-          <a href="/lang?lang=en&next=/" aria-current={lang === "en" ? "page" : undefined}>
-            English
-          </a>
-          <a href="/lang?lang=es&next=/" aria-current={lang === "es" ? "page" : undefined}>
-            Español
-          </a>
-        </nav>
-      </header>
+      <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath="/" />
       <main className="sheet">
         <h1>{text.title}</h1>
         <p>{text.body}</p>

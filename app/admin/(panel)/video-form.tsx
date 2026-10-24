@@ -1,5 +1,6 @@
 import { deleteVideo, saveVideo } from "@/app/admin/(panel)/actions";
 import { DeleteVideoButton } from "@/app/admin/(panel)/delete-button";
+import { CopyLink } from "@/components/CopyLink";
 import type { Stage, Video } from "@/lib/types";
 import { embedUrl } from "@/lib/youtube";
 
@@ -8,11 +9,15 @@ export function VideoForm({
   video,
   error,
   saved,
+  textingUrl,
+  defaultStage,
 }: {
   stages: Stage[];
   video?: Video;
   error?: string;
   saved?: boolean;
+  textingUrl?: string;
+  defaultStage?: string;
 }) {
   const englishPlayer = embedUrl(video?.youtubeUrlEn);
   const spanishPlayer = embedUrl(video?.youtubeUrlEs);
@@ -23,6 +28,13 @@ export function VideoForm({
         <a href="/admin">Back to stages and videos</a>
       </p>
       <h1>{video ? video.titleEn : "New video"}</h1>
+      {textingUrl ? (
+        <section>
+          <h2>Texting link</h2>
+          <p>Send this exact link. It stays private until the video is published.</p>
+          <CopyLink url={textingUrl} />
+        </section>
+      ) : null}
       {error ? <p className="form-error">{error}</p> : null}
       {saved ? <p className="form-ok">Saved.</p> : null}
       <form action={saveVideo} className="stack">
@@ -34,7 +46,7 @@ export function VideoForm({
           </label>
           <label>
             Stage
-            <select name="stageId" defaultValue={video?.stageId ?? stages[0]?.id} required>
+            <select name="stageId" defaultValue={video?.stageId ?? defaultStage ?? stages[0]?.id} required>
               {stages.map((stage) => (
                 <option key={stage.id} value={stage.id}>
                   {stage.labelEn}
@@ -66,6 +78,10 @@ export function VideoForm({
               YouTube link
               <input name="youtubeUrlEn" defaultValue={video?.youtubeUrlEn ?? ""} placeholder="https://youtu.be/..." />
             </label>
+            <label>
+              Photo link, if there is no video yet
+              <input name="imageUrlEn" defaultValue={video?.imageUrlEn ?? ""} placeholder="https://..." />
+            </label>
             {englishPlayer ? (
               <div className="player">
                 <iframe src={englishPlayer} title={video?.titleEn || "English video"} allowFullScreen />
@@ -93,6 +109,10 @@ export function VideoForm({
             <label>
               Enlace de YouTube
               <input name="youtubeUrlEs" defaultValue={video?.youtubeUrlEs ?? ""} placeholder="https://youtu.be/..." />
+            </label>
+            <label>
+              Enlace de la foto, si todavía no hay video
+              <input name="imageUrlEs" defaultValue={video?.imageUrlEs ?? ""} placeholder="https://..." />
             </label>
             {spanishPlayer ? (
               <div className="player">

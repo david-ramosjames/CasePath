@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import type { Stage, Video } from "@/lib/types";
+import type { Brand, Stage, Video } from "@/lib/types";
 
 type StageRow = {
   id: string;
@@ -7,6 +7,18 @@ type StageRow = {
   label_en: string;
   label_es: string;
   optional: boolean;
+  header_en: string;
+  header_es: string;
+  intro_en: string;
+  intro_es: string;
+  youtube_url_en: string | null;
+  youtube_url_es: string | null;
+  image_url_en: string | null;
+  image_url_es: string | null;
+  takeaways_en: string[] | null;
+  takeaways_es: string[] | null;
+  next_steps_en: string;
+  next_steps_es: string;
 };
 
 type VideoRow = {
@@ -20,6 +32,8 @@ type VideoRow = {
   intro_es: string;
   youtube_url_en: string | null;
   youtube_url_es: string | null;
+  image_url_en: string | null;
+  image_url_es: string | null;
   takeaways_en: string[] | null;
   takeaways_es: string[] | null;
   next_steps_en: string;
@@ -35,6 +49,18 @@ function stageFrom(row: StageRow): Stage {
     labelEn: row.label_en,
     labelEs: row.label_es,
     optional: row.optional,
+    headerEn: row.header_en,
+    headerEs: row.header_es,
+    introEn: row.intro_en,
+    introEs: row.intro_es,
+    youtubeUrlEn: row.youtube_url_en,
+    youtubeUrlEs: row.youtube_url_es,
+    imageUrlEn: row.image_url_en,
+    imageUrlEs: row.image_url_es,
+    takeawaysEn: row.takeaways_en ?? [],
+    takeawaysEs: row.takeaways_es ?? [],
+    nextStepsEn: row.next_steps_en,
+    nextStepsEs: row.next_steps_es,
   };
 }
 
@@ -50,6 +76,8 @@ function videoFrom(row: VideoRow): Video {
     introEs: row.intro_es,
     youtubeUrlEn: row.youtube_url_en,
     youtubeUrlEs: row.youtube_url_es,
+    imageUrlEn: row.image_url_en,
+    imageUrlEs: row.image_url_es,
     takeawaysEn: row.takeaways_en ?? [],
     takeawaysEs: row.takeaways_es ?? [],
     nextStepsEn: row.next_steps_en,
@@ -64,7 +92,7 @@ export async function listStages(): Promise<Stage[]> {
   if (!client) return [];
   const { data, error } = await client
     .from("casepath_stages")
-    .select("id, sort_order, label_en, label_es, optional")
+    .select("*")
     .order("sort_order");
   if (error) throw new Error(error.message);
   return ((data ?? []) as StageRow[]).map(stageFrom);
@@ -79,6 +107,24 @@ export async function listVideos(): Promise<Video[]> {
     .order("sort_order");
   if (error) throw new Error(error.message);
   return ((data ?? []) as VideoRow[]).map(videoFrom);
+}
+
+export async function getStage(id: string): Promise<Stage | null> {
+  const stages = await listStages();
+  return stages.find((stage) => stage.id === id) ?? null;
+}
+
+export async function getBrand(): Promise<Brand> {
+  const client = db();
+  const fallback = { logoUrl: "", firmName: "Ramos James Law, PLLC" };
+  if (!client) return fallback;
+  const { data, error } = await client.from("casepath_settings").select("key, value");
+  if (error) throw new Error(error.message);
+  const map = Object.fromEntries(((data ?? []) as { key: string; value: string }[]).map((row) => [row.key, row.value]));
+  return {
+    logoUrl: map.logo_url ?? "",
+    firmName: map.firm_name?.trim() || fallback.firmName,
+  };
 }
 
 export async function getVideo(slug: string): Promise<Video | null> {
