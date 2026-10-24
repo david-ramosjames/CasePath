@@ -1,0 +1,84 @@
+:root {
+  --navy: #02234d;
+  --blue: #2d5b82;
+  --sky: #70b6e0;
+  --pink: #fb2489;
+  --ink: #102033;
+  --paper: #ffffff;
+  --muted: #4d6074;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Avenir Next", "Avenir", "Segoe UI", sans-serif;
+}
+
+.site-header {
+  background: var(--navy);
+  color: #ffffff;
+  padding: 20px 20px 18px;
+}
+
+.firm-name {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.product-name {
+  margin: 4px 0 0;
+  color: var(--sky);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.sheet {
+  max-width: 32rem;
+  padding: 28px 20px 40px;
+}
+
+h1 {
+  margin: 0 0 12px;
+  color: var(--navy);
+  font-size: 1.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+.contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin-top: 8px;
+  padding: 0 18px;
+  border-radius: 8px;
+  background: var(--pink);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.contact:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 3px;
+}
