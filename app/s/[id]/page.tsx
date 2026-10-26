@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { ContactCard } from "@/components/ContactCard";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
-import { StageTracker } from "@/components/CaseView";
+import { StageTracker } from "@/components/StageTracker";
+import { VideoCards } from "@/components/VideoCards";
 import { getBrand, getStage, listStages, listVideos } from "@/lib/content";
 import { getLang, lines, text } from "@/lib/lang";
 
@@ -60,21 +61,11 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
             <p>{nextSteps}</p>
           </section>
         ) : null}
-        {inStage.length > 0 ? (
-          <section className="playlist">
-            <h2>{es ? "Videos de esta etapa" : "Videos in this stage"}</h2>
-            <ul>
-              {inStage.map((video) => (
-                <li key={video.slug}>
-                  <a href={`/v/${video.slug}`}>
-                    <strong>{text(lang, video.titleEn, video.titleEs)}</strong>
-                    <span>{text(lang, video.introEn, video.introEs)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+        <VideoCards
+          lang={lang}
+          videos={inStage}
+          heading={es ? `Videos en ${text(lang, stage.labelEn, stage.labelEs)}` : `Videos in ${text(lang, stage.labelEn, stage.labelEs)}`}
+        />
         <ContactCard lang={lang} />
       </main>
     </>

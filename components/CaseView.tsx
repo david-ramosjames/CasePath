@@ -1,6 +1,8 @@
 import { ContactCard } from "@/components/ContactCard";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
+import { StageTracker } from "@/components/StageTracker";
+import { VideoCards } from "@/components/VideoCards";
 import type { Brand, Lang, Stage, Video } from "@/lib/types";
 import { lines, text } from "@/lib/lang";
 
@@ -48,7 +50,7 @@ export function CaseView({
         />
         {takeaways.length > 0 ? (
           <section>
-            <h2>{es ? "Puntos clave" : "Key points"}</h2>
+            <h2>{es ? "En este video" : "In this video"}</h2>
             <ul className="takeaways">
               {takeaways.map((item) => (
                 <li key={item}>{item}</li>
@@ -62,56 +64,21 @@ export function CaseView({
             <p>{nextSteps}</p>
           </section>
         ) : null}
-        {related.length > 0 ? (
-          <section className="playlist">
-            <h2>{es ? "Más videos en esta etapa" : "More videos in this stage"}</h2>
-            <ul>
-              {related.map((video) => (
-                <li key={video.slug}>
-                  <a href={`/v/${video.slug}`}>
-                    <strong>{text(lang, video.titleEn, video.titleEs)}</strong>
-                    <span>{text(lang, video.introEn, video.introEs)}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
+        <VideoCards
+          lang={lang}
+          videos={related}
+          heading={
+            stage
+              ? es
+                ? `Más videos en ${text(lang, stage.labelEn, stage.labelEs)}`
+                : `More in ${text(lang, stage.labelEn, stage.labelEs)}`
+              : es
+                ? "Más videos"
+                : "More videos"
+          }
+        />
         <ContactCard lang={lang} />
       </main>
     </>
-  );
-}
-
-export function StageTracker({
-  lang,
-  stages,
-  viewingIndex,
-}: {
-  lang: Lang;
-  stages: Stage[];
-  viewingIndex: number;
-}) {
-  const es = lang === "es";
-  return (
-    <nav className="tracker" aria-label={es ? "Etapas del caso" : "Case stages"}>
-      {stages.map((stage, index) => {
-        const state = index === viewingIndex ? "active" : index < viewingIndex ? "done" : "upcoming";
-        const label = es ? stage.labelEs : stage.labelEn;
-        const className = `stage ${state}${stage.optional ? " optional" : ""}`;
-        const inner = (
-          <>
-            <span className="num">{state === "done" ? "✓" : index + 1}</span>
-            <span className="stage-label">{label}</span>
-            {stage.optional ? <span className="stage-note">{es ? "Si hace falta" : "If needed"}</span> : null}
-          </>
-        );
-        return (
-          <a key={stage.id} className={className} href={`/s/${stage.id}`} aria-current={state === "active" ? "page" : undefined}>
-            {inner}
-          </a>
-        );
-      })}
-    </nav>
   );
 }

@@ -25,3 +25,9 @@ export function embedUrl(input: string | null | undefined): string | null {
   if (!id || !/^[\w-]{6,}$/.test(id)) return null;
   return `https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}`;
 }
+
+export function thumbUrl(input: string | null | undefined): string | null {
+  const id = youtubeId(input);
+  if (!id || !/^[\w-]{6,}$/.test(id)) return null;
+  return `https://i.ytimg.com/vi/${encodeURIComponent(id)}/mqdefault.jpg`;
+}
