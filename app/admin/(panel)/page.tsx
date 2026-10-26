@@ -22,7 +22,7 @@ export default async function AdminHome({
   return (
     <main className="sheet admin-sheet">
       <h1>CasePath editor</h1>
-      <p>Each stage has its own page. Each video has its own texting link. Publish a video before that link works for a client.</p>
+      <p>Each stage has its own page. Each video has its own texting link. Anyone with the link can open it.</p>
       {error ? <p className="form-error">{error}</p> : null}
       {saved ? <p className="form-ok">Saved.</p> : null}
 
@@ -41,7 +41,11 @@ export default async function AdminHome({
             Or paste a logo link
             <input name="logoUrl" defaultValue={brand.logoUrl} placeholder="https://..." />
           </label>
-          {brand.logoUrl ? <img className="logo-preview" src={brand.logoUrl} alt="" /> : null}
+          {brand.logoUrl ? (
+            <div className="logo-preview">
+              <img src={brand.logoUrl} alt="" />
+            </div>
+          ) : null}
           <button className="contact compact" type="submit">
             Save logo
           </button>

@@ -128,7 +128,6 @@ export default async function StageEditor({
                 <strong>{video.titleEn}</strong>
                 <span>{video.titleEs}</span>
               </a>
-              <span className={video.published ? "badge on" : "badge"}>{video.published ? "Published" : "Draft"}</span>
               <CopyLink url={`${origin}/v/${video.slug}`} />
             </li>
           ))}

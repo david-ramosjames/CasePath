@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
 import { StageTracker } from "@/components/CaseView";
-import { isAdmin } from "@/lib/auth";
 import { getBrand, getStage, listStages, listVideos } from "@/lib/content";
 import { getLang, lines, text } from "@/lib/lang";
 
@@ -10,12 +9,11 @@ export const dynamic = "force-dynamic";
 
 export default async function StagePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [lang, stages, stage, videos, admin, brand] = await Promise.all([
+  const [lang, stages, stage, videos, brand] = await Promise.all([
     getLang(),
     listStages(),
     getStage(id),
     listVideos(),
-    isAdmin(),
     getBrand(),
   ]);
   if (!stage) notFound();
@@ -27,9 +25,7 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
   const image = es ? stage.imageUrlEs || stage.imageUrlEn : stage.imageUrlEn || stage.imageUrlEs;
   const takeaways = lines(lang, stage.takeawaysEn, stage.takeawaysEs);
   const nextSteps = text(lang, stage.nextStepsEn, stage.nextStepsEs);
-  const inStage = videos
-    .filter((video) => video.stageId === stage.id && (admin || video.published))
-    .sort((a, b) => a.sortOrder - b.sortOrder);
+  const inStage = videos.filter((video) => video.stageId === stage.id).sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <>

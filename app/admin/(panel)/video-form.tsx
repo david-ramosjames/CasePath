@@ -31,7 +31,7 @@ export function VideoForm({
       {textingUrl ? (
         <section>
           <h2>Texting link</h2>
-          <p>Send this exact link. It stays private until the video is published.</p>
+          <p>Send this exact link. Anyone who opens it can see this page.</p>
           <CopyLink url={textingUrl} />
         </section>
       ) : null}
@@ -59,10 +59,6 @@ export function VideoForm({
             <input name="sortOrder" type="number" min={0} defaultValue={video?.sortOrder ?? 0} />
           </label>
         </div>
-        <label className="check">
-          <input name="published" type="checkbox" defaultChecked={video?.published ?? false} />
-          Published on the client page
-        </label>
         <div className="lang-grid">
           <fieldset>
             <legend>English</legend>

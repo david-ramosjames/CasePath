@@ -15,8 +15,7 @@ export function FirmHeader({
   return (
     <header className="site-header">
       <div className="brand">
-        {logoUrl ? <img className="logo" src={logoUrl} alt="" /> : null}
-        <p className="firm-name">{firmName}</p>
+        {logoUrl ? <img className="logo" src={logoUrl} alt={firmName} /> : <p className="firm-name">{firmName}</p>}
       </div>
       <nav className="lang" aria-label={es ? "Idioma" : "Language"}>
         <a href={`/lang?lang=en&next=${encodeURIComponent(nextPath)}`} aria-current={lang === "en" ? "page" : undefined}>

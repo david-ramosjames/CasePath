@@ -45,12 +45,11 @@ body {
 }
 
 .logo {
-  height: 40px;
+  height: 72px;
   width: auto;
-  max-width: 48px;
+  max-width: 11rem;
   object-fit: contain;
-  background: #ffffff;
-  border-radius: 6px;
+  mix-blend-mode: screen;
 }
 
 .firm-name {
@@ -457,11 +456,18 @@ legend {
 }
 
 .logo-preview {
-  height: 64px;
-  width: auto;
-  object-fit: contain;
+  display: inline-flex;
   background: var(--navy);
   border-radius: 8px;
+  padding: 8px;
+}
+
+.logo-preview img {
+  height: 96px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  mix-blend-mode: screen;
 }
 
 .stage-cards {

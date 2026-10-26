@@ -169,7 +169,6 @@ export async function saveVideo(formData: FormData) {
   const nextStepsEn = String(formData.get("nextStepsEn") ?? "").trim();
   const nextStepsEs = String(formData.get("nextStepsEs") ?? "").trim();
   const sortOrder = Number(formData.get("sortOrder") ?? 0);
-  const published = formData.get("published") === "on";
   const back = originalSlug ? `/admin/videos/${originalSlug}` : "/admin/videos/new";
 
   if (!slug || !stageId || !titleEn || !titleEs) {
@@ -203,7 +202,7 @@ export async function saveVideo(formData: FormData) {
     next_steps_en: nextStepsEn,
     next_steps_es: nextStepsEs,
     sort_order: Number.isFinite(sortOrder) ? sortOrder : 0,
-    published,
+    published: true,
     updated_at: new Date().toISOString(),
   };
 
