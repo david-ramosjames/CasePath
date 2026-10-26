@@ -116,7 +116,7 @@ export async function getStage(id: string): Promise<Stage | null> {
 
 export async function getBrand(): Promise<Brand> {
   const client = db();
-  const fallback = { logoUrl: "", firmName: "Ramos James Law, PLLC" };
+  const fallback = { logoUrl: "", firmName: "Ramos James Law, PLLC", phone: "" };
   if (!client) return fallback;
   const { data, error } = await client.from("casepath_settings").select("key, value");
   if (error) throw new Error(error.message);
@@ -124,6 +124,7 @@ export async function getBrand(): Promise<Brand> {
   return {
     logoUrl: map.logo_url ?? "",
     firmName: map.firm_name?.trim() || fallback.firmName,
+    phone: map.phone?.trim() ?? "",
   };
 }
 

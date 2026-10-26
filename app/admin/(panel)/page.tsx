@@ -27,11 +27,15 @@ export default async function AdminHome({
       {saved ? <p className="form-ok">Saved.</p> : null}
 
       <section className="editor-section">
-        <h2>Firm logo</h2>
+        <h2>Firm</h2>
         <form action={saveBrand} className="stack">
           <label>
             Firm name
             <input name="firmName" defaultValue={brand.firmName} />
+          </label>
+          <label>
+            Phone number for the call button
+            <input name="phone" defaultValue={brand.phone} placeholder="512-537-3369" inputMode="tel" />
           </label>
           <label>
             Upload logo (PNG, JPG, or WebP, under 2 MB)
@@ -47,7 +51,7 @@ export default async function AdminHome({
             </div>
           ) : null}
           <button className="contact compact" type="submit">
-            Save logo
+            Save
           </button>
         </form>
       </section>

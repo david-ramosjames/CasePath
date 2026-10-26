@@ -23,6 +23,7 @@ export type Stage = {
 export type Brand = {
   logoUrl: string;
   firmName: string;
+  phone: string;
 };
 
 export type Video = {

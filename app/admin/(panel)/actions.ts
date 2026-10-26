@@ -21,6 +21,13 @@ function cleanUrl(value: string) {
   return trimmed;
 }
 
+function cleanPhone(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  if (!/^[0-9+().\-\s]+$/.test(trimmed) || trimmed.replace(/\D/g, "").length < 10) return undefined;
+  return trimmed;
+}
+
 function cleanImage(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return null;
@@ -110,6 +117,8 @@ export async function saveStagePage(formData: FormData) {
 export async function saveBrand(formData: FormData) {
   const client = await requireAdmin();
   const firmName = String(formData.get("firmName") ?? "").trim() || "Ramos James Law, PLLC";
+  const phone = cleanPhone(String(formData.get("phone") ?? ""));
+  if (phone === undefined) redirect("/admin?error=Enter+a+phone+number+with+at+least+10+digits");
   let logoUrl = String(formData.get("logoUrl") ?? "").trim();
   const file = formData.get("logo");
   if (file instanceof File && file.size > 0) {
@@ -135,6 +144,7 @@ export async function saveBrand(formData: FormData) {
   const { error } = await client.from("casepath_settings").upsert([
     { key: "firm_name", value: firmName, updated_at: now },
     { key: "logo_url", value: logoUrl, updated_at: now },
+    { key: "phone", value: phone, updated_at: now },
   ]);
   if (error) redirect(`/admin?error=${encodeURIComponent(error.message)}`);
   revalidatePath("/");

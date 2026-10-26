@@ -32,7 +32,7 @@ export default async function HomePage() {
         <h1>{text.title}</h1>
         <p>{text.body}</p>
         <p>{text.hint}</p>
-        <ContactCard lang={lang} />
+        <ContactCard lang={lang} phone={brand.phone} />
       </main>
     </>
   );

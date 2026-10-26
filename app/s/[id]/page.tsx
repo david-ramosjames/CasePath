@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ContactCard } from "@/components/ContactCard";
+import { NextSteps } from "@/components/NextSteps";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
 import { StageTracker } from "@/components/StageTracker";
@@ -55,18 +56,13 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
             </ul>
           </section>
         ) : null}
-        {nextSteps ? (
-          <section className="next">
-            <h2>{es ? "¿Qué sigue?" : "What happens next?"}</h2>
-            <p>{nextSteps}</p>
-          </section>
-        ) : null}
+        {nextSteps ? <NextSteps title={es ? "¿Qué sigue?" : "What happens next?"} body={nextSteps} /> : null}
         <VideoCards
           lang={lang}
           videos={inStage}
           heading={es ? `Videos en ${text(lang, stage.labelEn, stage.labelEs)}` : `Videos in ${text(lang, stage.labelEn, stage.labelEs)}`}
         />
-        <ContactCard lang={lang} />
+        <ContactCard lang={lang} phone={brand.phone} />
       </main>
     </>
   );

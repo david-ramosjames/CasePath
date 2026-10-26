@@ -1,6 +1,7 @@
 import { ContactCard } from "@/components/ContactCard";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
+import { NextSteps } from "@/components/NextSteps";
 import { StageTracker } from "@/components/StageTracker";
 import { VideoCards } from "@/components/VideoCards";
 import type { Brand, Lang, Stage, Video } from "@/lib/types";
@@ -58,12 +59,7 @@ export function CaseView({
             </ul>
           </section>
         ) : null}
-        {nextSteps ? (
-          <section className="next">
-            <h2>{es ? "¿Qué sigue?" : "What happens next?"}</h2>
-            <p>{nextSteps}</p>
-          </section>
-        ) : null}
+        {nextSteps ? <NextSteps title={es ? "¿Qué sigue?" : "What happens next?"} body={nextSteps} /> : null}
         <VideoCards
           lang={lang}
           videos={related}
@@ -77,7 +73,7 @@ export function CaseView({
                 : "More videos"
           }
         />
-        <ContactCard lang={lang} />
+        <ContactCard lang={lang} phone={brand.phone} />
       </main>
     </>
   );
