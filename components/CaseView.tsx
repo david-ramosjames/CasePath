@@ -1,3 +1,4 @@
+import { ContactCard } from "@/components/ContactCard";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
 import type { Brand, Lang, Stage, Video } from "@/lib/types";
@@ -31,8 +32,10 @@ export function CaseView({
 
   return (
     <>
-      <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/v/${current.slug}`} />
-      <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
+      <div className="pin">
+        <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/v/${current.slug}`} />
+        <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
+      </div>
       <main className="sheet">
         <p className="eyebrow">{stage ? text(lang, stage.labelEn, stage.labelEs) : es ? "Video" : "Video"}</p>
         <h1>{title}</h1>
@@ -74,6 +77,7 @@ export function CaseView({
             </ul>
           </section>
         ) : null}
+        <ContactCard lang={lang} />
       </main>
     </>
   );

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { ContactCard } from "@/components/ContactCard";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
 import { StageTracker } from "@/components/CaseView";
@@ -29,8 +30,10 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
 
   return (
     <>
-      <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/s/${stage.id}`} />
-      <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
+      <div className="pin">
+        <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/s/${stage.id}`} />
+        <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
+      </div>
       <main className="sheet">
         <p className="eyebrow">{es ? "Etapa actual" : "Current stage"}</p>
         <h1>{title}</h1>
@@ -72,6 +75,7 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
             </ul>
           </section>
         ) : null}
+        <ContactCard lang={lang} />
       </main>
     </>
   );

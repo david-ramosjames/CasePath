@@ -26,6 +26,12 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+.pin {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
 .site-header {
   display: flex;
   align-items: center;
@@ -121,6 +127,57 @@ h1 {
 }
 
 .contact:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 3px;
+}
+
+.help {
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px solid #d7e2ec;
+  border-radius: 16px;
+  background: #ffffff;
+}
+
+.help h2 {
+  margin: 0 0 6px;
+  color: var(--navy);
+  font-size: 1.125rem;
+  line-height: 1.3;
+}
+
+.help p {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.help-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: #ffffff;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.help-button:visited {
+  color: #ffffff;
+}
+
+.help-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.help-button:focus-visible {
   outline: 3px solid var(--sky);
   outline-offset: 3px;
 }
