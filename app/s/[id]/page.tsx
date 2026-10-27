@@ -3,6 +3,7 @@ import { ContactCard } from "@/components/ContactCard";
 import { NextSteps } from "@/components/NextSteps";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
+import { SiteFooter } from "@/components/SiteFooter";
 import { StageTracker } from "@/components/StageTracker";
 import { VideoCards } from "@/components/VideoCards";
 import { getBrand, getStage, listStages, listVideos } from "@/lib/content";
@@ -31,39 +32,46 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
   const inStage = videos.filter((video) => video.stageId === stage.id).sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <>
+    <div className="client-page">
       <div className="pin">
         <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/s/${stage.id}`} />
         <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
       </div>
-      <main className="sheet">
-        <p className="eyebrow">{es ? "Etapa actual" : "Current stage"}</p>
-        <h1>{title}</h1>
-        {intro ? <p>{intro}</p> : null}
-        <MediaFrame
-          title={title}
-          youtube={youtube}
-          image={image}
-          empty={es ? "Esta etapa todavía no tiene video ni foto." : "This stage does not have a video or photo yet."}
-        />
-        {takeaways.length > 0 ? (
-          <section>
-            <h2>{es ? "Puntos clave" : "Key points"}</h2>
-            <ul className="takeaways">
-              {takeaways.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </section>
-        ) : null}
-        {nextSteps ? <NextSteps title={es ? "¿Qué sigue?" : "What happens next?"} body={nextSteps} /> : null}
-        <VideoCards
-          lang={lang}
-          videos={inStage}
-          heading={es ? `Videos en ${text(lang, stage.labelEn, stage.labelEs)}` : `Videos in ${text(lang, stage.labelEn, stage.labelEs)}`}
-        />
-        <ContactCard lang={lang} phone={brand.phone} />
+      <main className="sheet case-layout">
+        <div className="case-main">
+          <p className="eyebrow">{text(lang, stage.labelEn, stage.labelEs)}</p>
+          <h1>{title}</h1>
+          {intro ? <p className="lede">{intro}</p> : null}
+          <MediaFrame
+            title={title}
+            youtube={youtube}
+            image={image}
+            empty={es ? "Esta etapa todavía no tiene video ni foto." : "This stage does not have a video or photo yet."}
+          />
+          <div className="case-lower">
+            {takeaways.length > 0 ? (
+              <section>
+                <h2>{es ? "En esta etapa" : "In this stage"}</h2>
+                <ul className="takeaways">
+                  {takeaways.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+            {nextSteps ? <NextSteps title={es ? "¿Qué sigue?" : "What happens next?"} body={nextSteps} /> : null}
+          </div>
+        </div>
+        <aside className="case-side">
+          <VideoCards
+            lang={lang}
+            videos={inStage}
+            heading={es ? `Videos en ${text(lang, stage.labelEn, stage.labelEs)}` : `Videos in ${text(lang, stage.labelEn, stage.labelEs)}`}
+          />
+          <ContactCard lang={lang} phone={brand.phone} />
+        </aside>
       </main>
-    </>
+      <SiteFooter brand={brand} />
+    </div>
   );
 }

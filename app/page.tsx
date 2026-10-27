@@ -1,5 +1,6 @@
 import { ContactCard } from "@/components/ContactCard";
 import { FirmHeader } from "@/components/FirmHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { getBrand } from "@/lib/content";
 import { getLang } from "@/lib/lang";
 
@@ -24,7 +25,7 @@ export default async function HomePage() {
   const [lang, brand] = await Promise.all([getLang(), getBrand()]);
   const text = copy[lang];
   return (
-    <>
+    <div className="client-page">
       <div className="pin">
         <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath="/" />
       </div>
@@ -34,6 +35,7 @@ export default async function HomePage() {
         <p>{text.hint}</p>
         <ContactCard lang={lang} phone={brand.phone} />
       </main>
-    </>
+      <SiteFooter brand={brand} />
+    </div>
   );
 }
