@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { CopyLink } from "@/components/CopyLink";
-import { saveStagePage } from "@/app/admin/(panel)/actions";
+import { moveVideo, saveStagePage } from "@/app/admin/(panel)/actions";
 import { getStage, listVideos } from "@/lib/content";
 import { siteOrigin } from "@/lib/origin";
 
@@ -15,7 +15,9 @@ export default async function StageEditor({
   const { error, saved } = await searchParams;
   const [stage, videos, origin] = await Promise.all([getStage(id), listVideos(), siteOrigin()]);
   if (!stage) notFound();
-  const inStage = videos.filter((video) => video.stageId === stage.id).sort((a, b) => a.sortOrder - b.sortOrder);
+  const inStage = videos
+    .filter((video) => video.stageId === stage.id)
+    .sort((a, b) => a.sortOrder - b.sortOrder || a.slug.localeCompare(b.slug));
 
   return (
     <main className="sheet admin-sheet">
@@ -120,14 +122,32 @@ export default async function StageEditor({
             Add video
           </a>
         </div>
+        <p>The top video is the main video on this stage page.</p>
         {inStage.length === 0 ? <p>No videos in this stage yet.</p> : null}
         <ul className="video-index">
-          {inStage.map((video) => (
+          {inStage.map((video, index) => (
             <li key={video.id}>
+              <div className="reorder">
+                <form action={moveVideo}>
+                  <input type="hidden" name="slug" value={video.slug} />
+                  <input type="hidden" name="direction" value="up" />
+                  <button type="submit" disabled={index === 0} aria-label={`Move ${video.titleEn} up`}>
+                    Up
+                  </button>
+                </form>
+                <form action={moveVideo}>
+                  <input type="hidden" name="slug" value={video.slug} />
+                  <input type="hidden" name="direction" value="down" />
+                  <button type="submit" disabled={index === inStage.length - 1} aria-label={`Move ${video.titleEn} down`}>
+                    Down
+                  </button>
+                </form>
+              </div>
               <a href={`/admin/videos/${video.slug}`}>
                 <strong>{video.titleEn}</strong>
                 <span>{video.titleEs}</span>
               </a>
+              {index === 0 ? <span className="badge on">Main video</span> : null}
               <CopyLink url={`${origin}/v/${video.slug}`} />
             </li>
           ))}

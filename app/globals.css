@@ -639,6 +639,30 @@ h1 {
   align-items: center;
 }
 
+.reorder {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reorder button {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--blue);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reorder button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 .video-index a {
   display: flex;
   flex-direction: column;

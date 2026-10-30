@@ -229,6 +229,42 @@ export async function saveVideo(formData: FormData) {
   redirect(`/admin/videos/${slug}?saved=1`);
 }
 
+export async function moveVideo(formData: FormData) {
+  const client = await requireAdmin();
+  const slug = String(formData.get("slug") ?? "");
+  const direction = String(formData.get("direction") ?? "");
+  const { data, error } = await client.from("casepath_videos").select("slug, stage_id").eq("slug", slug).maybeSingle();
+  if (error || !data) redirect("/admin?error=Video+not+found");
+  const stageId = String(data.stage_id);
+  const { data: rows, error: listError } = await client
+    .from("casepath_videos")
+    .select("slug, sort_order")
+    .eq("stage_id", stageId);
+  if (listError) redirect(`/admin/stages/${stageId}?error=${encodeURIComponent(listError.message)}`);
+  const ordered = ((rows ?? []) as { slug: string; sort_order: number }[]).sort(
+    (a, b) => a.sort_order - b.sort_order || a.slug.localeCompare(b.slug),
+  );
+  const index = ordered.findIndex((row) => row.slug === slug);
+  const target = direction === "up" ? index - 1 : index + 1;
+  if (index < 0 || target < 0 || target >= ordered.length) redirect(`/admin/stages/${stageId}`);
+  const swapped = [...ordered];
+  const current = swapped[index];
+  swapped[index] = swapped[target];
+  swapped[target] = current;
+  const now = new Date().toISOString();
+  for (let position = 0; position < swapped.length; position += 1) {
+    const { error: updateError } = await client
+      .from("casepath_videos")
+      .update({ sort_order: position + 1, updated_at: now })
+      .eq("slug", swapped[position].slug);
+    if (updateError) redirect(`/admin/stages/${stageId}?error=${encodeURIComponent(updateError.message)}`);
+  }
+  revalidatePath("/admin");
+  revalidatePath(`/admin/stages/${stageId}`);
+  revalidatePath(`/s/${stageId}`);
+  redirect(`/admin/stages/${stageId}?saved=1`);
+}
+
 export async function deleteVideo(formData: FormData) {
   const client = await requireAdmin();
   const slug = String(formData.get("slug") ?? "");
