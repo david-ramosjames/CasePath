@@ -51,14 +51,16 @@ export function StageTracker({
           {stages.map((stage, index) => {
             const label = es ? stage.labelEs : stage.labelEn;
             const active = index === viewingIndex;
+            const done = viewingIndex >= 0 && index < viewingIndex;
+            const className = `stage${active ? " active" : ""}${done ? " done" : ""}${stage.optional ? " optional" : ""}`;
             return (
               <a
                 key={stage.id}
-                className={active ? "stage active" : stage.optional ? "stage optional" : "stage"}
+                className={className}
                 href={`/s/${stage.id}`}
                 aria-current={active ? "page" : undefined}
               >
-                <span className="num">{index + 1}</span>
+                <span className="num">{done ? "✓" : index + 1}</span>
                 <span className="stage-label">{label}</span>
               </a>
             );

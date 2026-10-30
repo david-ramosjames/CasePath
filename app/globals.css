@@ -640,6 +640,20 @@ button.player {
   color: #ffffff;
 }
 
+.stage.done .num {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.stage.done::after {
+  background: var(--blue);
+}
+
+.stage.done.optional .num {
+  border-style: solid;
+}
+
 .stage.optional .num {
   border-style: dotted;
 }
