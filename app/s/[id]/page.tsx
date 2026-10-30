@@ -1,16 +1,19 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ContactCard } from "@/components/ContactCard";
-import { NextSteps } from "@/components/NextSteps";
-import { FirmHeader } from "@/components/FirmHeader";
-import { MediaFrame } from "@/components/MediaFrame";
-import { SiteFooter } from "@/components/SiteFooter";
-import { StageTracker } from "@/components/StageTracker";
-import { VideoCards } from "@/components/VideoCards";
+import { GuideLayout } from "@/components/GuideLayout";
 import { getBrand, getStage, listStages, listVideos } from "@/lib/content";
 import { getLang, lines, text } from "@/lib/lang";
 import type { Lang, Stage, Video } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const [lang, stage] = await Promise.all([getLang(), getStage(id)]);
+  if (!stage) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
+  const title = text(lang, stage.headerEn, stage.headerEs) || text(lang, stage.labelEn, stage.labelEs);
+  return { title, description: text(lang, stage.introEn, stage.introEs) || undefined };
+}
 
 export default async function StagePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,7 +25,6 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
     getBrand(),
   ]);
   if (!stage) notFound();
-  const es = lang === "es";
   const viewingIndex = stages.findIndex((item) => item.id === stage.id);
   const inStage = videos
     .filter((video) => video.stageId === stage.id)
@@ -30,58 +32,37 @@ export default async function StagePage({ params }: { params: Promise<{ id: stri
   const featured = inStage[0];
   const featuredMedia = pickMedia(lang, featured);
   const stageMedia = pickMedia(lang, stage);
-  const title = text(lang, stage.headerEn, stage.headerEs) || (featured ? text(lang, featured.titleEn, featured.titleEs) : text(lang, stage.labelEn, stage.labelEs));
-  const intro = text(lang, stage.introEn, stage.introEs) || (featured ? text(lang, featured.introEn, featured.introEs) : "");
+  const title =
+    text(lang, stage.headerEn, stage.headerEs) ||
+    (featured ? text(lang, featured.titleEn, featured.titleEs) : text(lang, stage.labelEn, stage.labelEs));
+  const summary = text(lang, stage.introEn, stage.introEs) || (featured ? text(lang, featured.introEn, featured.introEs) : "");
   const youtube = featuredMedia.youtube || stageMedia.youtube;
   const image = featuredMedia.youtube ? featuredMedia.image : featuredMedia.image || stageMedia.image;
   const takeaways = lines(lang, stage.takeawaysEn, stage.takeawaysEs);
   const videoTakeaways = featured ? lines(lang, featured.takeawaysEn, featured.takeawaysEs) : [];
-  const points = takeaways.length > 0 ? takeaways : videoTakeaways;
-  const nextSteps = text(lang, stage.nextStepsEn, stage.nextStepsEs) || (featured ? text(lang, featured.nextStepsEn, featured.nextStepsEs) : "");
-  const more = inStage.filter((video) => video.slug !== featured?.slug);
+  const steps = takeaways.length > 0 ? takeaways : videoTakeaways;
+  const continues =
+    text(lang, stage.nextStepsEn, stage.nextStepsEs) || (featured ? text(lang, featured.nextStepsEn, featured.nextStepsEs) : "");
 
   return (
-    <div className="client-page">
-      <div className="pin">
-        <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={`/s/${stage.id}`} />
-        <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
-      </div>
-      <main className="sheet case-layout">
-        <div className="case-main">
-          <p className="eyebrow">{text(lang, stage.labelEn, stage.labelEs)}</p>
-          <h1>{title}</h1>
-          {intro ? <p className="lede">{intro}</p> : null}
-          <MediaFrame
-            title={title}
-            youtube={youtube}
-            image={image}
-            empty={es ? "Esta etapa todavía no tiene video ni foto." : "This stage does not have a video or photo yet."}
-          />
-          <div className="case-lower">
-            {points.length > 0 ? (
-              <section>
-                <h2>{es ? "En esta etapa" : "In this stage"}</h2>
-                <ul className="takeaways">
-                  {points.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-            {nextSteps ? <NextSteps title={es ? "¿Qué sigue?" : "What happens next?"} body={nextSteps} /> : null}
-          </div>
-        </div>
-        <aside className="case-side">
-          <VideoCards
-            lang={lang}
-            videos={more}
-            heading={es ? `Más videos en ${text(lang, stage.labelEn, stage.labelEs)}` : `More in ${text(lang, stage.labelEn, stage.labelEs)}`}
-          />
-          <ContactCard lang={lang} phone={brand.phone} />
-        </aside>
-      </main>
-      <SiteFooter brand={brand} />
-    </div>
+    <GuideLayout
+      lang={lang}
+      brand={brand}
+      stages={stages}
+      viewingIndex={viewingIndex}
+      nextPath={`/s/${stage.id}`}
+      title={title}
+      summary={summary}
+      usually={text(lang, stage.usuallyEn, stage.usuallyEs)}
+      steps={steps}
+      continues={continues}
+      timing={text(lang, stage.timingEn, stage.timingEs)}
+      question={text(lang, stage.faqQuestionEn, stage.faqQuestionEs)}
+      answer={text(lang, stage.faqAnswerEn, stage.faqAnswerEs)}
+      youtube={youtube}
+      image={image}
+      related={inStage.filter((video) => video.slug !== featured?.slug)}
+    />
   );
 }
 

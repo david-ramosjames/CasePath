@@ -19,6 +19,14 @@ type StageRow = {
   takeaways_es: string[] | null;
   next_steps_en: string;
   next_steps_es: string;
+  usually_en: string | null;
+  usually_es: string | null;
+  timing_en: string | null;
+  timing_es: string | null;
+  faq_q_en: string | null;
+  faq_q_es: string | null;
+  faq_a_en: string | null;
+  faq_a_es: string | null;
 };
 
 type VideoRow = {
@@ -61,6 +69,14 @@ function stageFrom(row: StageRow): Stage {
     takeawaysEs: row.takeaways_es ?? [],
     nextStepsEn: row.next_steps_en,
     nextStepsEs: row.next_steps_es,
+    usuallyEn: row.usually_en ?? "",
+    usuallyEs: row.usually_es ?? "",
+    timingEn: row.timing_en ?? "",
+    timingEs: row.timing_es ?? "",
+    faqQuestionEn: row.faq_q_en ?? "",
+    faqQuestionEs: row.faq_q_es ?? "",
+    faqAnswerEn: row.faq_a_en ?? "",
+    faqAnswerEs: row.faq_a_es ?? "",
   };
 }
 

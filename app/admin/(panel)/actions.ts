@@ -31,6 +31,7 @@ function cleanPhone(value: string) {
 function cleanImage(value: string) {
   const trimmed = value.trim();
   if (!trimmed) return null;
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return trimmed;
   try {
     const url = new URL(trimmed);
     if (url.protocol !== "https:" && url.protocol !== "http:") return undefined;
@@ -105,6 +106,14 @@ export async function saveStagePage(formData: FormData) {
       takeaways_es: parseTakeaways(String(formData.get("takeawaysEs") ?? "")),
       next_steps_en: String(formData.get("nextStepsEn") ?? "").trim(),
       next_steps_es: String(formData.get("nextStepsEs") ?? "").trim(),
+      usually_en: String(formData.get("usuallyEn") ?? "").trim(),
+      usually_es: String(formData.get("usuallyEs") ?? "").trim(),
+      timing_en: String(formData.get("timingEn") ?? "").trim(),
+      timing_es: String(formData.get("timingEs") ?? "").trim(),
+      faq_q_en: String(formData.get("faqQuestionEn") ?? "").trim(),
+      faq_q_es: String(formData.get("faqQuestionEs") ?? "").trim(),
+      faq_a_en: String(formData.get("faqAnswerEn") ?? "").trim(),
+      faq_a_es: String(formData.get("faqAnswerEs") ?? "").trim(),
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);

@@ -18,6 +18,14 @@ export type Stage = {
   takeawaysEs: string[];
   nextStepsEn: string;
   nextStepsEs: string;
+  usuallyEn: string;
+  usuallyEs: string;
+  timingEn: string;
+  timingEs: string;
+  faqQuestionEn: string;
+  faqQuestionEs: string;
+  faqAnswerEn: string;
+  faqAnswerEs: string;
 };
 
 export type Brand = {

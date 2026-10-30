@@ -60,7 +60,6 @@ export function StageTracker({
               >
                 <span className="num">{index + 1}</span>
                 <span className="stage-label">{label}</span>
-                {stage.optional ? <span className="stage-note">{es ? "Si hace falta" : "If needed"}</span> : null}
               </a>
             );
           })}

@@ -8,14 +8,14 @@ export const dynamic = "force-dynamic";
 
 const copy = {
   en: {
-    title: "Open the link in your text message",
-    body: "CasePath is the page we send with a video about your case. It opens from that personal link, which shows where your case stands.",
+    title: "Explore the case process",
+    body: "CasePath is a guide to the common stages of an injury case. Open a topic from your text message to learn what it means and what usually happens.",
     hint: "If you typed this address yourself, go back to the message from Ramos James Law and tap the link.",
     language: "Language",
   },
   es: {
-    title: "Abra el enlace de su mensaje de texto",
-    body: "CasePath es la página que enviamos con un video sobre su caso. Se abre desde ese enlace personal y muestra en qué etapa está su caso.",
+    title: "Conozca el proceso del caso",
+    body: "CasePath es una guía de las etapas habituales de un caso por lesiones. Abra un tema desde su mensaje de texto para conocer qué significa y qué suele pasar.",
     hint: "Si escribió esta dirección, regrese al mensaje de Ramos James Law y toque el enlace.",
     language: "Idioma",
   },
@@ -35,7 +35,7 @@ export default async function HomePage() {
         <p>{text.hint}</p>
         <ContactCard lang={lang} phone={brand.phone} />
       </main>
-      <SiteFooter brand={brand} />
+      <SiteFooter lang={lang} />
     </div>
   );
 }

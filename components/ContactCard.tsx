@@ -25,29 +25,14 @@ export function ContactCard({ lang, phone }: { lang: Lang; phone: string }) {
         </svg>
       </span>
       <span className="call-copy">
-        <strong>{es ? "Estamos aquí si nos necesita." : "We're here if you need us."}</strong>
-        <span>
-          {es
-            ? "¿Tiene preguntas? Responda al mensaje de texto o llame a nuestro equipo."
-            : "Have questions? Reply to the text message we sent you, or give our team a call."}
-        </span>
+        <strong>{es ? "¿Preguntas?" : "Questions?"}</strong>
+        <span>{es ? "Responda a nuestro mensaje o llámenos." : "Reply to our text or call us."}</span>
       </span>
-      {href ? (
-        <span className="chevron" aria-hidden="true">
-          ›
-        </span>
-      ) : null}
     </>
   );
   return (
     <aside className="call-card">
-      {href ? (
-        <a className="call-row" href={href}>
-          {row}
-        </a>
-      ) : (
-        <div className="call-row">{row}</div>
-      )}
+      <div className="call-row">{row}</div>
       {href ? (
         <a className="call-button" href={href}>
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -59,7 +44,7 @@ export function ContactCard({ lang, phone }: { lang: Lang; phone: string }) {
               strokeLinejoin="round"
             />
           </svg>
-          {es ? "Llamar a Ramos James Law" : "Call Ramos James Law"}
+          {es ? "Llame a su equipo" : "Call your team"}
         </a>
       ) : null}
     </aside>

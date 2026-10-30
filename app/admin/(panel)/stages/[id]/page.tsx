@@ -25,7 +25,7 @@ export default async function StageEditor({
         <a href="/admin">Back to stages</a>
       </p>
       <h1>{stage.labelEn}</h1>
-      <p>This is the page for the whole stage. Videos listed below each get their own texting link.</p>
+      <p>This page explains the topic for every reader. It does not show a person’s case status. Videos listed below each get their own texting link.</p>
       {error ? <p className="form-error">{error}</p> : null}
       {saved ? <p className="form-ok">Saved.</p> : null}
 
@@ -53,55 +53,87 @@ export default async function StageEditor({
           <fieldset>
             <legend>English</legend>
             <label>
-              Header
+              Topic title
               <input name="headerEn" defaultValue={stage.headerEn} />
             </label>
             <label>
-              Text
+              Summary
               <textarea name="introEn" defaultValue={stage.introEn} rows={4} />
+            </label>
+            <label>
+              What usually happens
+              <textarea name="usuallyEn" defaultValue={stage.usuallyEn} rows={3} />
+            </label>
+            <label>
+              Helpful steps, one per line
+              <textarea name="takeawaysEn" defaultValue={stage.takeawaysEn.join("\n")} rows={4} />
+            </label>
+            <label>
+              How the process may continue
+              <textarea name="nextStepsEn" defaultValue={stage.nextStepsEn} rows={3} />
+            </label>
+            <label>
+              What affects the timing
+              <textarea name="timingEn" defaultValue={stage.timingEn} rows={3} />
+            </label>
+            <label>
+              Question
+              <input name="faqQuestionEn" defaultValue={stage.faqQuestionEn} />
+            </label>
+            <label>
+              Answer
+              <textarea name="faqAnswerEn" defaultValue={stage.faqAnswerEn} rows={3} />
             </label>
             <label>
               YouTube link
               <input name="youtubeUrlEn" defaultValue={stage.youtubeUrlEn ?? ""} placeholder="https://youtu.be/..." />
             </label>
             <label>
-              Photo link, if there is no video yet
-              <input name="imageUrlEn" defaultValue={stage.imageUrlEn ?? ""} placeholder="https://..." />
-            </label>
-            <label>
-              Key points, one per line
-              <textarea name="takeawaysEn" defaultValue={stage.takeawaysEn.join("\n")} rows={4} />
-            </label>
-            <label>
-              What happens next?
-              <textarea name="nextStepsEn" defaultValue={stage.nextStepsEn} rows={3} />
+              Illustration or photo, if there is no video
+              <input name="imageUrlEn" defaultValue={stage.imageUrlEn ?? ""} placeholder="https://... or /guide/topic.png" />
             </label>
           </fieldset>
           <fieldset>
             <legend>Español</legend>
             <label>
-              Encabezado
+              Título del tema
               <input name="headerEs" defaultValue={stage.headerEs} />
             </label>
             <label>
-              Texto
+              Resumen
               <textarea name="introEs" defaultValue={stage.introEs} rows={4} />
+            </label>
+            <label>
+              Qué suele pasar
+              <textarea name="usuallyEs" defaultValue={stage.usuallyEs} rows={3} />
+            </label>
+            <label>
+              Pasos útiles, uno por línea
+              <textarea name="takeawaysEs" defaultValue={stage.takeawaysEs.join("\n")} rows={4} />
+            </label>
+            <label>
+              Cómo puede continuar el proceso
+              <textarea name="nextStepsEs" defaultValue={stage.nextStepsEs} rows={3} />
+            </label>
+            <label>
+              Qué influye en los tiempos
+              <textarea name="timingEs" defaultValue={stage.timingEs} rows={3} />
+            </label>
+            <label>
+              Pregunta
+              <input name="faqQuestionEs" defaultValue={stage.faqQuestionEs} />
+            </label>
+            <label>
+              Respuesta
+              <textarea name="faqAnswerEs" defaultValue={stage.faqAnswerEs} rows={3} />
             </label>
             <label>
               Enlace de YouTube
               <input name="youtubeUrlEs" defaultValue={stage.youtubeUrlEs ?? ""} placeholder="https://youtu.be/..." />
             </label>
             <label>
-              Enlace de la foto, si todavía no hay video
-              <input name="imageUrlEs" defaultValue={stage.imageUrlEs ?? ""} placeholder="https://..." />
-            </label>
-            <label>
-              Puntos clave, uno por línea
-              <textarea name="takeawaysEs" defaultValue={stage.takeawaysEs.join("\n")} rows={4} />
-            </label>
-            <label>
-              ¿Qué sigue?
-              <textarea name="nextStepsEs" defaultValue={stage.nextStepsEs} rows={3} />
+              Ilustración o foto, si no hay video
+              <input name="imageUrlEs" defaultValue={stage.imageUrlEs ?? ""} placeholder="https://... o /guide/tema.png" />
             </label>
           </fieldset>
         </div>
