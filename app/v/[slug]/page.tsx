@@ -3,16 +3,20 @@ import { notFound } from "next/navigation";
 import { CaseView } from "@/components/CaseView";
 import { getBrand, getVideo, listStages, listVideos } from "@/lib/content";
 import { getLang, text } from "@/lib/lang";
+import { siteOrigin } from "@/lib/origin";
+import { previewMeta } from "@/lib/preview";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const [lang, video] = await Promise.all([getLang(), getVideo(slug)]);
+  const [lang, video, origin] = await Promise.all([getLang(), getVideo(slug), siteOrigin()]);
   if (!video) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
+  const title = text(lang, video.titleEn, video.titleEs);
+  const description = text(lang, video.introEn, video.introEs) || undefined;
   return {
-    title: text(lang, video.titleEn, video.titleEs),
-    description: text(lang, video.introEn, video.introEs) || undefined,
+    title,
+    ...previewMeta({ lang, title, description, path: `/v/${video.slug}`, origin }),
   };
 }
 

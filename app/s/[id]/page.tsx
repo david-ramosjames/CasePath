@@ -3,16 +3,28 @@ import { notFound } from "next/navigation";
 import { GuideLayout } from "@/components/GuideLayout";
 import { getBrand, getStage, listStages, listVideos } from "@/lib/content";
 import { getLang, lines, text } from "@/lib/lang";
+import { siteOrigin } from "@/lib/origin";
+import { previewMeta, stagePreviewTitle } from "@/lib/preview";
 import type { Lang, Stage, Video } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const [lang, stage] = await Promise.all([getLang(), getStage(id)]);
+  const [lang, stage, origin] = await Promise.all([getLang(), getStage(id), siteOrigin()]);
   if (!stage) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
-  const title = text(lang, stage.headerEn, stage.headerEs) || text(lang, stage.labelEn, stage.labelEs);
-  return { title, description: text(lang, stage.introEn, stage.introEs) || undefined };
+  const pageTitle = text(lang, stage.headerEn, stage.headerEs) || text(lang, stage.labelEn, stage.labelEs);
+  const description = text(lang, stage.introEn, stage.introEs) || undefined;
+  return {
+    title: pageTitle,
+    ...previewMeta({
+      lang,
+      title: stagePreviewTitle(stage.id, lang, pageTitle),
+      description,
+      path: `/s/${stage.id}`,
+      origin,
+    }),
+  };
 }
 
 export default async function StagePage({ params }: { params: Promise<{ id: string }> }) {

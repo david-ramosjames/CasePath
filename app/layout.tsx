@@ -1,12 +1,22 @@
 import type { Metadata, Viewport } from "next";
 import { getLang } from "@/lib/lang";
+import { siteOrigin } from "@/lib/origin";
+import { previewMeta } from "@/lib/preview";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: { default: "CasePath | Ramos James Law", template: "%s | CasePath" },
-  description: "A clear guide to the injury case process.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [lang, origin] = await Promise.all([getLang(), siteOrigin()]);
+  const title = "CasePath | Ramos James Law";
+  const description =
+    lang === "es" ? "Una guía clara del proceso de un caso por lesiones." : "A clear guide to the injury case process.";
+  return {
+    metadataBase: new URL(origin),
+    title: { default: title, template: "%s | CasePath" },
+    description,
+    robots: { index: false, follow: false },
+    ...previewMeta({ lang, title, description, path: "/", origin }),
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
