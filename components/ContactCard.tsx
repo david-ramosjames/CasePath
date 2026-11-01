@@ -27,6 +27,11 @@ export function ContactCard({ lang, phone }: { lang: Lang; phone: string }) {
       <span className="call-copy">
         <strong>{es ? "¿Preguntas?" : "Questions?"}</strong>
         <span>{es ? "Responda a nuestro mensaje o llámenos." : "Reply to our text or call us."}</span>
+        {phone && href ? (
+          <a className="call-number" href={href}>
+            {phone}
+          </a>
+        ) : null}
       </span>
     </>
   );

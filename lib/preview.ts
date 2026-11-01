@@ -11,11 +11,11 @@ export const previewImage = {
 const stageTitles: Record<string, { en: string; es: string }> = {
   "getting-started": { en: "Understand the case process", es: "Conozca el proceso del caso" },
   treatment: { en: "Medical care and your claim", es: "Atención médica y su reclamo" },
-  demand: { en: "How a claim is prepared", es: "Cómo se prepara un reclamo" },
+  demand: { en: "How a claim works", es: "Cómo funciona un reclamo" },
   negotiation: { en: "How negotiation works", es: "Cómo funciona la negociación" },
   litigation: { en: "What if a lawsuit is needed?", es: "¿Y si se necesita una demanda judicial?" },
   settlement: { en: "Understanding a settlement", es: "Comprenda un acuerdo" },
-  disbursement: { en: "How settlement payments work", es: "Cómo se realizan los pagos de un acuerdo" },
+  disbursement: { en: "Closing and payment", es: "Cierre y pago" },
 };
 
 export function stagePreviewTitle(id: string, lang: Lang, fallback: string) {
