@@ -52,6 +52,8 @@ export function GuideLayout({
   const current = stages[viewingIndex];
   const topic = current ? (es ? current.labelEs : current.labelEn) : "";
   const showQuestion = Boolean(question && answer && !isStatusDisclaimer(question));
+  const moreHeading = topic ? (es ? `Más en ${topic}` : `More in ${topic}`) : es ? "Más videos" : "More videos";
+  const below = related.length > 2 ? related.slice(2) : related;
 
   return (
     <div className="client-page guide-page">
@@ -95,15 +97,15 @@ export function GuideLayout({
             </section>
           ) : null}
           <div className="related-mobile">
-            <VideoCards lang={lang} videos={related} heading={topic ? (es ? `Más en ${topic}` : `More in ${topic}`) : es ? "Más videos" : "More videos"} />
+            <VideoCards lang={lang} videos={related} heading={moreHeading} />
           </div>
           <div className="related-extra">
-            <VideoCards lang={lang} videos={related.slice(2)} heading={topic ? (es ? `Más en ${topic}` : `More in ${topic}`) : es ? "Más videos" : "More videos"} />
+            <VideoCards lang={lang} videos={below} heading={moreHeading} />
           </div>
         </main>
         <aside className="guide-side">
           <ContactCard lang={lang} phone={brand.phone} />
-          <VideoCards lang={lang} videos={related.slice(0, 2)} heading={topic ? (es ? `Más en ${topic}` : `More in ${topic}`) : es ? "Más videos" : "More videos"} />
+          <VideoCards lang={lang} videos={related.slice(0, 2)} heading={moreHeading} />
         </aside>
       </div>
       <SiteFooter lang={lang} />
