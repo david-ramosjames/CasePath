@@ -1026,8 +1026,8 @@ button.player {
 }
 
 .link-board {
-  margin-top: 20px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 12px 14px;
   border: 2px solid var(--navy);
   border-radius: 16px;
   background: #f4f8fc;
@@ -1035,6 +1035,10 @@ button.player {
 
 .link-board h2,
 .link-board h3 {
+  margin: 0 0 6px;
+}
+
+.link-board p {
   margin-bottom: 8px;
 }
 
@@ -1042,23 +1046,62 @@ button.player {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  margin-bottom: 10px;
 }
 
-.link-group {
+.link-stage {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding: 8px 0;
+  border-top: 1px solid #d5e0ea;
 }
 
-.link-group li {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
+.link-stage h3 {
+  font-size: 0.95rem;
 }
 
-.link-group strong {
+.link-row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 13rem) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 4px 8px;
+  align-items: center;
+  margin: 0 0 4px;
+}
+
+.link-title {
   color: var(--navy);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.admin-sheet .link-board .copy-link {
+  flex: 1 1 auto;
+  gap: 4px;
+}
+
+.admin-sheet .link-board .copy-link input {
+  min-height: 32px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+}
+
+.admin-sheet .link-board .contact.compact {
+  width: auto;
+  min-height: 32px;
+  margin-top: 0;
+  padding: 0 10px;
+  font-size: 0.8125rem;
+}
+
+.link-board .copy-label {
+  min-width: 1.5rem;
+  font-size: 0.6875rem;
+}
+
+@media (max-width: 800px) {
+  .link-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .copy-label {

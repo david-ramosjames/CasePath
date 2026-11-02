@@ -28,11 +28,17 @@ export default async function AdminHome({
       {saved ? <p className="form-ok">Saved.</p> : null}
 
       <PageLinkBoard
-        stages={stages.map((stage) => ({ title: stage.labelEn, path: `/s/${stage.id}` }))}
-        videos={videos
-          .filter((video) => video.published)
-          .sort((a, b) => a.sortOrder - b.sortOrder || a.slug.localeCompare(b.slug))
-          .map((video) => ({ title: video.titleEn, path: `/v/${video.slug}` }))}
+        sections={stages.map((stage) => ({
+          title: stage.labelEn,
+          path: `/s/${stage.id}`,
+          videos: videos
+            .filter((video) => video.stageId === stage.id)
+            .sort((a, b) => a.sortOrder - b.sortOrder || a.slug.localeCompare(b.slug))
+            .map((video) => ({
+              title: video.published ? video.titleEn : `${video.titleEn} (not published)`,
+              path: `/v/${video.slug}`,
+            })),
+        }))}
       />
 
       <section className="editor-section">

@@ -9,12 +9,18 @@ export type PageLink = {
   path: string;
 };
 
-function lines(items: PageLink[], lang: "en" | "es") {
-  return items
-    .map((item) => {
-      const url = lang === "es" ? `${publicSiteUrl}${item.path}?lang=es` : `${publicSiteUrl}${item.path}`;
-      return `${item.title}\n${url}`;
-    })
+export type SectionLinks = PageLink & {
+  videos: PageLink[];
+};
+
+function url(path: string, lang: "en" | "es") {
+  return lang === "es" ? `${publicSiteUrl}${path}?lang=es` : `${publicSiteUrl}${path}`;
+}
+
+function lines(sections: SectionLinks[], lang: "en" | "es") {
+  return sections
+    .flatMap((section) => [section, ...section.videos])
+    .map((item) => `${item.title}\n${url(item.path, lang)}`)
     .join("\n\n");
 }
 
@@ -34,40 +40,38 @@ function CopyBlock({ label, text }: { label: string; text: string }) {
   );
 }
 
-function LinkGroup({ heading, items }: { heading: string; items: PageLink[] }) {
-  if (items.length === 0) return null;
+function LinkRow({ title, path }: PageLink) {
   return (
-    <div>
-      <h3>{heading}</h3>
-      <ul className="link-group">
-        {items.map((item) => (
-          <li key={item.path}>
-            <strong>{item.title}</strong>
-            <CopyLink label="English" url={`${publicSiteUrl}${item.path}`} />
-            <CopyLink label="Spanish" url={`${publicSiteUrl}${item.path}?lang=es`} />
-          </li>
-        ))}
-      </ul>
+    <div className="link-row">
+      <span className="link-title">{title}</span>
+      <CopyLink label="EN" url={url(path, "en")} />
+      <CopyLink label="ES" url={url(path, "es")} />
     </div>
   );
 }
 
-export function PageLinkBoard({ stages, videos }: { stages: PageLink[]; videos: PageLink[] }) {
-  const everything = [...stages, ...videos];
+export function PageLinkBoard({ sections }: { sections: SectionLinks[] }) {
   return (
     <section className="editor-section link-board" id="page-links">
       <h2>Page links</h2>
       <p>
-        Copy these into text messages. They use <strong>{publicSiteUrl.replace("https://", "")}</strong>. A Spanish link
-        ends in <strong>?lang=es</strong> so the message preview is in Spanish.
+        Copy these into text messages. They use <strong>{publicSiteUrl.replace("https://", "")}</strong>. Spanish links
+        end in <strong>?lang=es</strong>.
       </p>
       <div className="link-actions">
-        <CopyBlock label="Copy all links" text={`${lines(stages, "en")}\n\n${lines(stages, "es")}\n\n${lines(videos, "en")}\n\n${lines(videos, "es")}`} />
-        <CopyBlock label="Copy English links" text={lines(everything, "en")} />
-        <CopyBlock label="Copy Spanish links" text={lines(everything, "es")} />
+        <CopyBlock label="Copy all links" text={`${lines(sections, "en")}\n\n${lines(sections, "es")}`} />
+        <CopyBlock label="Copy English links" text={lines(sections, "en")} />
+        <CopyBlock label="Copy Spanish links" text={lines(sections, "es")} />
       </div>
-      <LinkGroup heading="Stage pages" items={stages} />
-      <LinkGroup heading="Video pages" items={videos} />
+      {sections.map((section) => (
+        <div className="link-stage" key={section.path}>
+          <h3>{section.title}</h3>
+          <LinkRow title="Stage page" path={section.path} />
+          {section.videos.map((video) => (
+            <LinkRow key={video.path} title={video.title} path={video.path} />
+          ))}
+        </div>
+      ))}
     </section>
   );
 }
