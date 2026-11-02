@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { Lang, Stage } from "@/lib/types";
+import { withLang } from "@/lib/with-lang";
 
 export function StageTracker({
   lang,
@@ -57,7 +58,7 @@ export function StageTracker({
               <a
                 key={stage.id}
                 className={className}
-                href={`/s/${stage.id}`}
+                href={withLang(`/s/${stage.id}`, lang)}
                 aria-current={active ? "page" : undefined}
               >
                 <span className="num">{done ? "✓" : index + 1}</span>

@@ -17,7 +17,7 @@ export default async function NotFound() {
             : "Explore all topics or contact Ramos James Law."}
         </p>
         <p>
-          <a href="/s/getting-started">{es ? "Conozca el proceso del caso" : "Explore the case process"}</a>
+          <a href={es ? "/s/getting-started?lang=es" : "/s/getting-started"}>{es ? "Conozca el proceso del caso" : "Explore the case process"}</a>
         </p>
       </main>
       <SiteFooter lang={lang} />

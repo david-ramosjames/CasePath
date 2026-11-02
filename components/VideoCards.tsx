@@ -1,5 +1,6 @@
 import type { Lang, Video } from "@/lib/types";
 import { text } from "@/lib/lang";
+import { withLang } from "@/lib/with-lang";
 import { thumbUrl } from "@/lib/youtube";
 
 export function VideoCards({ lang, videos, heading }: { lang: Lang; videos: Video[]; heading: string }) {
@@ -15,7 +16,7 @@ export function VideoCards({ lang, videos, heading }: { lang: Lang; videos: Vide
           const thumb = thumbUrl(youtube) || image;
           return (
             <li key={video.slug}>
-              <a className="video-card" href={`/v/${video.slug}`}>
+              <a className="video-card" href={withLang(`/v/${video.slug}`, lang)}>
                 <span className="thumb">
                   {thumb ? <img src={thumb} alt="" /> : null}
                   <span className="play" aria-hidden="true">

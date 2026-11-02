@@ -132,10 +132,10 @@ export function VideoForm({
           </button>
           {video ? (
             <>
-          <a className="quiet-button" href={`/lang?lang=en&next=${encodeURIComponent(`/v/${video.slug}`)}`} target="_blank" rel="noreferrer">
+          <a className="quiet-button" href={`/v/${video.slug}`} target="_blank" rel="noreferrer">
             Preview English page
           </a>
-          <a className="quiet-button" href={`/lang?lang=es&next=${encodeURIComponent(`/v/${video.slug}`)}`} target="_blank" rel="noreferrer">
+          <a className="quiet-button" href={`/v/${video.slug}?lang=es`} target="_blank" rel="noreferrer">
             Preview Spanish page
           </a>
             </>

@@ -8,12 +8,10 @@ function safeNext(value: string | null) {
 export function GET(request: NextRequest) {
   const lang = request.nextUrl.searchParams.get("lang") === "es" ? "es" : "en";
   const nextPath = safeNext(request.nextUrl.searchParams.get("next"));
-  const response = NextResponse.redirect(new URL(nextPath, request.url));
-  response.cookies.set("casepath_lang", lang, {
-    path: "/",
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  const destination = new URL(nextPath, request.url);
+  destination.searchParams.delete("lang");
+  if (lang === "es") destination.searchParams.set("lang", "es");
+  const response = NextResponse.redirect(destination);
+  response.cookies.set("casepath_lang", "", { path: "/", maxAge: 0 });
   return response;
 }
