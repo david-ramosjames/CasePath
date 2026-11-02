@@ -13,11 +13,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <p className="firm-name">Ramos James Law</p>
           <p className="product-name">CasePath editor</p>
         </div>
-        <form action={signOut}>
-          <button className="header-button" type="submit">
-            Sign out
-          </button>
-        </form>
+        <div className="header-actions">
+          <a className="header-button" href="/admin#page-links">
+            Page links
+          </a>
+          <form action={signOut}>
+            <button className="header-button" type="submit">
+              Sign out
+            </button>
+          </form>
+        </div>
       </header>
       {children}
     </div>

@@ -1,4 +1,7 @@
 import { headers } from "next/headers";
+import { publicSiteUrl } from "@/lib/public-site";
+
+export { publicSiteUrl };
 
 export async function siteOrigin() {
   const h = await headers();

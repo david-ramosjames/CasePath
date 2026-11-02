@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { VideoForm } from "@/app/admin/(panel)/video-form";
 import { getVideo, listStages } from "@/lib/content";
-import { siteOrigin } from "@/lib/origin";
+import { publicSiteUrl } from "@/lib/origin";
 
 export default async function EditVideoPage({
   params,
@@ -12,7 +12,7 @@ export default async function EditVideoPage({
 }) {
   const { slug } = await params;
   const { error, saved } = await searchParams;
-  const [video, stages, origin] = await Promise.all([getVideo(slug), listStages(), siteOrigin()]);
+  const [video, stages] = await Promise.all([getVideo(slug), listStages()]);
   if (!video) notFound();
   return (
     <VideoForm
@@ -20,7 +20,7 @@ export default async function EditVideoPage({
       video={video}
       error={error}
       saved={saved === "1"}
-      textingUrl={`${origin}/v/${video.slug}`}
+      textingUrl={`${publicSiteUrl}/v/${video.slug}`}
     />
   );
 }

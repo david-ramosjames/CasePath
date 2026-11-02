@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { deleteStage, saveBrand, saveStage } from "@/app/admin/(panel)/actions";
+import { PageLinkBoard } from "@/components/PageLinkBoard";
 import { db } from "@/lib/db";
 import { getBrand, listStages, listVideos } from "@/lib/content";
 
@@ -25,6 +26,14 @@ export default async function AdminHome({
       <p>Each stage has its own page. Each video has its own texting link. Anyone with the link can open it.</p>
       {error ? <p className="form-error">{error}</p> : null}
       {saved ? <p className="form-ok">Saved.</p> : null}
+
+      <PageLinkBoard
+        stages={stages.map((stage) => ({ title: stage.labelEn, path: `/s/${stage.id}` }))}
+        videos={videos
+          .filter((video) => video.published)
+          .sort((a, b) => a.sortOrder - b.sortOrder || a.slug.localeCompare(b.slug))
+          .map((video) => ({ title: video.titleEn, path: `/v/${video.slug}` }))}
+      />
 
       <section className="editor-section">
         <h2>Firm</h2>

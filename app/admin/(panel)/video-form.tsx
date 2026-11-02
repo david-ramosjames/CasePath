@@ -29,10 +29,11 @@ export function VideoForm({
       </p>
       <h1>{video ? video.titleEn : "New video"}</h1>
       {textingUrl ? (
-        <section>
-          <h2>Texting link</h2>
-          <p>Send this exact link. Anyone who opens it can see this page.</p>
-          <CopyLink url={textingUrl} />
+        <section className="editor-section">
+          <h2>Page links</h2>
+          <p>Send the exact link. Anyone who opens it can see this page. The Spanish link ends in ?lang=es.</p>
+          <CopyLink label="English" url={textingUrl} />
+          <CopyLink label="Spanish" url={`${textingUrl}?lang=es`} />
         </section>
       ) : null}
       {error ? <p className="form-error">{error}</p> : null}

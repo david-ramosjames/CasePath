@@ -43,6 +43,12 @@ body {
     calc(14px + env(safe-area-inset-left));
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -1019,6 +1025,51 @@ button.player {
   margin-top: 28px;
 }
 
+.link-board {
+  margin-top: 20px;
+  padding: 16px;
+  border: 2px solid var(--navy);
+  border-radius: 16px;
+  background: #f4f8fc;
+}
+
+.link-board h2,
+.link-board h3 {
+  margin-bottom: 8px;
+}
+
+.link-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.link-group {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link-group li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.link-group strong {
+  color: var(--navy);
+}
+
+.copy-label {
+  flex: none;
+  min-width: 4.5rem;
+  color: var(--blue);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .section-heading,
 .form-actions,
 .stage-row {
@@ -1221,6 +1272,7 @@ legend {
 .copy-link {
   display: flex;
   flex: 1 1 18rem;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
 }

@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 
-export function CopyLink({ url }: { url: string }) {
+export function CopyLink({ url, label = "Texting link" }: { url: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <div className="copy-link">
-      <input readOnly value={url} aria-label="Texting link" />
+      {label ? <span className="copy-label">{label}</span> : null}
+      <input readOnly value={url} aria-label={label} onFocus={(event) => event.currentTarget.select()} />
       <button
         type="button"
         className="contact compact"
@@ -15,7 +16,7 @@ export function CopyLink({ url }: { url: string }) {
           setCopied(true);
         }}
       >
-        {copied ? "Copied" : "Copy link"}
+        {copied ? "Copied" : "Copy"}
       </button>
     </div>
   );

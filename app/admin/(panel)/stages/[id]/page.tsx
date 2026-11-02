@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { CopyLink } from "@/components/CopyLink";
 import { moveVideo, saveStagePage } from "@/app/admin/(panel)/actions";
 import { getStage, listVideos } from "@/lib/content";
-import { siteOrigin } from "@/lib/origin";
+import { publicSiteUrl } from "@/lib/origin";
 
 export default async function StageEditor({
   params,
@@ -13,7 +13,7 @@ export default async function StageEditor({
 }) {
   const { id } = await params;
   const { error, saved } = await searchParams;
-  const [stage, videos, origin] = await Promise.all([getStage(id), listVideos(), siteOrigin()]);
+  const [stage, videos] = await Promise.all([getStage(id), listVideos()]);
   if (!stage) notFound();
   const inStage = videos
     .filter((video) => video.stageId === stage.id)
@@ -26,6 +26,11 @@ export default async function StageEditor({
       </p>
       <h1>{stage.labelEn}</h1>
       <p>This page explains the topic for every reader. It does not show a person’s case status. Videos listed below each get their own texting link.</p>
+      <section className="editor-section">
+        <h2>Page links</h2>
+        <CopyLink label="English" url={`${publicSiteUrl}/s/${stage.id}`} />
+        <CopyLink label="Spanish" url={`${publicSiteUrl}/s/${stage.id}?lang=es`} />
+      </section>
       {error ? <p className="form-error">{error}</p> : null}
       {saved ? <p className="form-ok">Saved.</p> : null}
 
@@ -180,7 +185,8 @@ export default async function StageEditor({
                 <span>{video.titleEs}</span>
               </a>
               {index === 0 ? <span className="badge on">Main video</span> : null}
-              <CopyLink url={`${origin}/v/${video.slug}`} />
+              <CopyLink label="English" url={`${publicSiteUrl}/v/${video.slug}`} />
+              <CopyLink label="Spanish" url={`${publicSiteUrl}/v/${video.slug}?lang=es`} />
             </li>
           ))}
         </ul>
