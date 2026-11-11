@@ -10,8 +10,15 @@ import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ t?: string }>;
+}): Promise<Metadata> {
   const { id } = await params;
+  const token = cleanToken((await searchParams).t);
   const [lang, stage, origin] = await Promise.all([getLang(), getStage(id), siteOrigin()]);
   if (!stage) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
   const pageTitle = text(lang, stage.headerEn, stage.headerEs) || text(lang, stage.labelEn, stage.labelEs);
@@ -24,6 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       description,
       path: `/s/${stage.id}`,
       origin,
+      token,
     }),
   };
 }

@@ -30,15 +30,18 @@ export function previewMeta({
   description,
   path,
   origin,
+  token,
 }: {
   lang: Lang;
   title: string;
   description?: string;
   path: string;
   origin: string;
+  token?: string | null;
 }): Metadata {
   const url = new URL(path, origin);
   if (lang === "es") url.searchParams.set("lang", "es");
+  if (token) url.searchParams.set("t", token);
   const image = {
     url: previewImage.path,
     width: previewImage.width,

@@ -1,13 +1,25 @@
+import type { Metadata } from "next";
 import { ContactCard } from "@/components/ContactCard";
 import { ExperienceRating } from "@/components/ExperienceRating";
 import { FirmHeader } from "@/components/FirmHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getBrand } from "@/lib/content";
 import { getLang } from "@/lib/lang";
+import { siteOrigin } from "@/lib/origin";
+import { previewMeta } from "@/lib/preview";
 import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
 import { withLang } from "@/lib/with-lang";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ t?: string }> }): Promise<Metadata> {
+  const token = cleanToken((await searchParams).t);
+  const [lang, origin] = await Promise.all([getLang(), siteOrigin()]);
+  const title = "CasePath | Ramos James Law";
+  const description =
+    lang === "es" ? "Una guía clara del proceso de un caso por lesiones." : "A clear guide to the injury case process.";
+  return previewMeta({ lang, title, description, path: "/", origin, token });
+}
 
 const copy = {
   en: {

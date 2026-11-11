@@ -9,15 +9,22 @@ import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ t?: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
+  const token = cleanToken((await searchParams).t);
   const [lang, video, origin] = await Promise.all([getLang(), getVideo(slug), siteOrigin()]);
   if (!video) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
   const title = text(lang, video.titleEn, video.titleEs);
   const description = text(lang, video.introEn, video.introEs) || undefined;
   return {
     title,
-    ...previewMeta({ lang, title, description, path: `/v/${video.slug}`, origin }),
+    ...previewMeta({ lang, title, description, path: `/v/${video.slug}`, origin, token }),
   };
 }
 
