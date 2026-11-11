@@ -206,14 +206,50 @@ export async function mintVisitLink(input: { caseNumber: string; path: string; l
       case_number: caseNumber,
       client_name: clientName,
       phone,
+      page_path: path,
+      lang,
     });
     if (!error) {
-      const url = `${publicSiteUrl}${withLang(path, lang, token)}`;
-      return { url, caseNumber, clientName };
+      // Short /r/TOKEN URL: phones fetch this exact address for the SMS preview card.
+      return { url: `${publicSiteUrl}/r/${token}`, caseNumber, clientName };
     }
     if (!/duplicate|unique/i.test(error.message)) throw new Error(error.message);
   }
   throw new Error("Could not mint a unique visit token.");
+}
+
+export type VisitTarget = VisitClient & {
+  path: string;
+  lang: Lang;
+  token: string;
+};
+
+/** Resolve a short /r/TOKEN link to the CasePath page it should open. */
+export async function resolveVisitTarget(raw: string | null | undefined): Promise<VisitTarget | null> {
+  const token = cleanToken(raw);
+  const client = db();
+  if (!token || !client) return null;
+  const { data, error } = await client
+    .from("casepath_visit_tokens")
+    .select("id, case_id, case_number, client_name, page_path, lang, revoked_at")
+    .eq("token_hash", tokenHash(token))
+    .maybeSingle();
+  if (error || !data || data.revoked_at) return null;
+  const path = cleanPagePath((data.page_path as string | null) ?? "") ?? "/";
+  const lang: Lang = data.lang === "es" ? "es" : "en";
+  return {
+    id: data.id as string,
+    caseId: (data.case_id as string | null) ?? null,
+    caseNumber: (data.case_number as string | null) ?? null,
+    clientName: (data.client_name as string | null) ?? null,
+    path,
+    lang,
+    token,
+  };
+}
+
+export function visitDestination(target: Pick<VisitTarget, "path" | "lang" | "token">) {
+  return `${publicSiteUrl}${withLang(target.path, target.lang, target.token)}`;
 }
 
 export function tokenSecretMatches(header: string | null) {

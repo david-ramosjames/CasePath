@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { Lang } from "@/lib/types";
+import { publicSiteUrl } from "@/lib/public-site";
 
 export const previewImage = {
   path: "/previews/casepath-preview-v1.jpg",
@@ -24,6 +25,11 @@ export function stagePreviewTitle(id: string, lang: Lang, fallback: string) {
   return lang === "es" ? titles.es : titles.en;
 }
 
+export function previewImageUrl(origin = publicSiteUrl) {
+  return `${origin.replace(/\/$/, "")}${previewImage.path}`;
+}
+
+/** og:url must equal the exact URL the phone requested for the SMS card. */
 export function previewMeta({
   lang,
   title,
@@ -39,10 +45,9 @@ export function previewMeta({
   origin: string;
   token?: string | null;
 }): Metadata {
-  // Preview crawlers are rewritten to the bare page, so og:url stays on the shared URL.
   const bare = path.replace(/\/t\/[A-Za-z0-9_-]{8,128}$/, "") || "/";
-  void token;
-  const url = new URL(bare || "/", origin);
+  const pathname = token ? `${bare === "/" ? "" : bare}/t/${token}` : bare;
+  const url = new URL(pathname || "/", origin);
   if (lang === "es") url.searchParams.set("lang", "es");
   const image = {
     url: previewImage.path,
