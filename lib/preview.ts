@@ -39,9 +39,10 @@ export function previewMeta({
   origin: string;
   token?: string | null;
 }): Metadata {
-  const url = new URL(path, origin);
+  const bare = path.replace(/\/t\/[A-Za-z0-9_-]{32,128}$/, "") || "/";
+  const pathname = token ? `${bare === "/" ? "" : bare}/t/${token}` : bare;
+  const url = new URL(pathname || "/", origin);
   if (lang === "es") url.searchParams.set("lang", "es");
-  if (token) url.searchParams.set("t", token);
   const image = {
     url: previewImage.path,
     width: previewImage.width,

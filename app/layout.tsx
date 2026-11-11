@@ -13,7 +13,6 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(origin),
     title: { default: title, template: "%s | CasePath" },
     description,
-    robots: { index: false, follow: false },
     ...previewMeta({ lang, title, description, path: "/", origin }),
   };
 }
