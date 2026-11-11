@@ -210,8 +210,8 @@ export async function mintVisitLink(input: { caseNumber: string; path: string; l
       lang,
     });
     if (!error) {
-      // Short /r/TOKEN URL: phones fetch this exact address for the SMS preview card.
-      return { url: `${publicSiteUrl}/r/${token}`, caseNumber, clientName };
+      // Same shared page path that already previews in SMS, plus a short ?rid= for tracking.
+      return { url: `${publicSiteUrl}${withLang(path, lang, token)}`, caseNumber, clientName };
     }
     if (!/duplicate|unique/i.test(error.message)) throw new Error(error.message);
   }

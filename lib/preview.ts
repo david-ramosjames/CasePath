@@ -29,7 +29,7 @@ export function previewImageUrl(origin = publicSiteUrl) {
   return `${origin.replace(/\/$/, "")}${previewImage.path}`;
 }
 
-/** og:url must equal the exact URL the phone requested for the SMS card. */
+/** Build Open Graph tags for the shared CasePath page, including a short rid when present. */
 export function previewMeta({
   lang,
   title,
@@ -46,9 +46,9 @@ export function previewMeta({
   token?: string | null;
 }): Metadata {
   const bare = path.replace(/\/t\/[A-Za-z0-9_-]{8,128}$/, "") || "/";
-  const pathname = token ? `${bare === "/" ? "" : bare}/t/${token}` : bare;
-  const url = new URL(pathname || "/", origin);
+  const url = new URL(bare || "/", origin);
   if (lang === "es") url.searchParams.set("lang", "es");
+  if (token) url.searchParams.set("rid", token);
   const image = {
     url: previewImage.path,
     width: previewImage.width,

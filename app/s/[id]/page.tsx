@@ -15,10 +15,11 @@ export async function generateMetadata({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ t?: string }>;
+  searchParams: Promise<{ rid?: string; t?: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const token = await readVisitToken((await searchParams).t);
+  const sp = await searchParams;
+  const token = await readVisitToken(sp.rid ?? sp.t);
   const [lang, stage, origin] = await Promise.all([getLang(), getStage(id), siteOrigin()]);
   if (!stage) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
   const pageTitle = text(lang, stage.headerEn, stage.headerEs) || text(lang, stage.labelEn, stage.labelEs);
@@ -41,10 +42,11 @@ export default async function StagePage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ t?: string }>;
+  searchParams: Promise<{ rid?: string; t?: string }>;
 }) {
   const { id } = await params;
-  const token = await readVisitToken((await searchParams).t);
+  const sp = await searchParams;
+  const token = await readVisitToken(sp.rid ?? sp.t);
   const [lang, stages, stage, videos, brand] = await Promise.all([
     getLang(),
     listStages(),

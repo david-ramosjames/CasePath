@@ -12,8 +12,13 @@ import { withLang } from "@/lib/with-lang";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ searchParams }: { searchParams: Promise<{ t?: string }> }): Promise<Metadata> {
-  const token = await readVisitToken((await searchParams).t);
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ rid?: string; t?: string }>;
+}): Promise<Metadata> {
+  const sp = await searchParams;
+  const token = await readVisitToken(sp.rid ?? sp.t);
   const [lang, origin] = await Promise.all([getLang(), siteOrigin()]);
   const title = "CasePath | Ramos James Law";
   const description =
@@ -36,8 +41,13 @@ const copy = {
   },
 };
 
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ t?: string }> }) {
-  const token = await readVisitToken((await searchParams).t);
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ rid?: string; t?: string }>;
+}) {
+  const sp = await searchParams;
+  const token = await readVisitToken(sp.rid ?? sp.t);
   const [lang, brand] = await Promise.all([getLang(), getBrand()]);
   const text = copy[lang];
   const pageLabel = "CasePath home";
