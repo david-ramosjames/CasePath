@@ -39,9 +39,10 @@ export function previewMeta({
   origin: string;
   token?: string | null;
 }): Metadata {
-  const bare = path.replace(/\/t\/[A-Za-z0-9_-]{32,128}$/, "") || "/";
-  const pathname = token ? `${bare === "/" ? "" : bare}/t/${token}` : bare;
-  const url = new URL(pathname || "/", origin);
+  // Preview crawlers are rewritten to the bare page, so og:url stays on the shared URL.
+  const bare = path.replace(/\/t\/[A-Za-z0-9_-]{8,128}$/, "") || "/";
+  void token;
+  const url = new URL(bare || "/", origin);
   if (lang === "es") url.searchParams.set("lang", "es");
   const image = {
     url: previewImage.path,

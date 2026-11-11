@@ -5,7 +5,7 @@ import { getBrand, getVideo, listStages, listVideos } from "@/lib/content";
 import { getLang, text } from "@/lib/lang";
 import { siteOrigin } from "@/lib/origin";
 import { previewMeta } from "@/lib/preview";
-import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
+import { latestRating, readVisitToken, recordPageView } from "@/lib/visit";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function generateMetadata({
   searchParams: Promise<{ t?: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const token = cleanToken((await searchParams).t);
+  const token = await readVisitToken((await searchParams).t);
   const [lang, video, origin] = await Promise.all([getLang(), getVideo(slug), siteOrigin()]);
   if (!video) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
   const title = text(lang, video.titleEn, video.titleEs);
@@ -36,7 +36,7 @@ export default async function VideoPage({
   searchParams: Promise<{ t?: string }>;
 }) {
   const { slug } = await params;
-  const token = cleanToken((await searchParams).t);
+  const token = await readVisitToken((await searchParams).t);
   const [lang, stages, videos, brand] = await Promise.all([getLang(), listStages(), listVideos(), getBrand()]);
   const current = videos.find((video) => video.slug === slug);
   if (!current) notFound();

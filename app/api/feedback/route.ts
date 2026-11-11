@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { notifyRating } from "@/lib/slack-feedback";
-import { cleanPagePath, cleanToken, saveRating } from "@/lib/visit";
+import { cleanPagePath, readVisitToken, saveRating } from "@/lib/visit";
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => null)) as {
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   const path = cleanPagePath(typeof body?.path === "string" ? body.path : "");
   const label = typeof body?.label === "string" ? body.label.trim().slice(0, 180) : "";
   const lang = body?.lang === "es" ? "es" : "en";
-  const token = cleanToken(typeof body?.token === "string" ? body.token : null);
+  const token = await readVisitToken(typeof body?.token === "string" ? body.token : null);
   if (!path || !Number.isInteger(stars) || stars < 1 || stars > 5) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }

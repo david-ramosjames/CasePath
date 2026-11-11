@@ -1,6 +1,6 @@
 import type { Lang } from "@/lib/types";
 
-const TOKEN = /\/t\/[A-Za-z0-9_-]{32,128}$/;
+const TOKEN = /\/t\/[A-Za-z0-9_-]{8,128}$/;
 
 /** Token lives in the path so text-message apps can still show the page preview. */
 export function withLang(path: string, lang: Lang, token: string | null = null) {

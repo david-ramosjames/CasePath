@@ -1,4 +1,5 @@
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
+import { cookies, headers } from "next/headers";
 import { db } from "@/lib/db";
 import type { Lang } from "@/lib/types";
 import { publicSiteUrl } from "@/lib/public-site";
@@ -11,11 +12,32 @@ export type VisitClient = {
   clientName: string | null;
 };
 
-const TOKEN = /^[A-Za-z0-9_-]{32,128}$/;
+/** New links are 10 chars; older texts used longer tokens. */
+export const TOKEN = /^[A-Za-z0-9_-]{8,128}$/;
+export const TOKEN_PATH = /\/t\/[A-Za-z0-9_-]{8,128}$/;
+export const VISIT_COOKIE = "casepath_vt";
+
+const PREVIEW_CRAWLER =
+  /bot|crawl|slurp|spider|facebookexternalhit|facebot|twitterbot|linkedinbot|slackbot|discordbot|whatsapp|skypeuripreview|applebot|google-pagerenderer|embedly|quora link preview|pinterest|redditbot|vkshare|w3c_validator|preview/i;
 
 export function cleanToken(value: string | null | undefined) {
   const token = value?.trim() ?? "";
   return TOKEN.test(token) ? token : null;
+}
+
+export function isPreviewCrawler(userAgent: string | null | undefined) {
+  return PREVIEW_CRAWLER.test(userAgent ?? "");
+}
+
+export async function readVisitToken(raw?: string | null) {
+  const fromUrl = cleanToken(raw);
+  if (fromUrl) return fromUrl;
+  try {
+    const jar = await cookies();
+    return cleanToken(jar.get(VISIT_COOKIE)?.value);
+  } catch {
+    return null;
+  }
 }
 
 export function cleanPagePath(value: string | null | undefined) {
@@ -29,6 +51,10 @@ export function cleanPagePath(value: string | null | undefined) {
 
 export function tokenHash(token: string) {
   return createHash("sha256").update(token).digest("hex");
+}
+
+function newVisitToken() {
+  return randomBytes(8).toString("base64url").replace(/=+$/, "").slice(0, 10);
 }
 
 export async function resolveVisit(raw: string | null | undefined): Promise<VisitClient | null> {
@@ -58,6 +84,11 @@ export async function recordPageView(input: {
   const client = db();
   const path = cleanPagePath(input.path);
   if (!client || !path) return;
+  try {
+    if (isPreviewCrawler((await headers()).get("user-agent"))) return;
+  } catch {
+    // headers() unavailable outside a request — still record
+  }
   const visit = await resolveVisit(input.token);
   if (visit) {
     const since = new Date(Date.now() - 20 * 60 * 1000).toISOString();
@@ -159,18 +190,30 @@ export async function mintVisitLink(input: { caseNumber: string; path: string; l
   const path = cleanPagePath(input.path);
   if (!client || !path) return null;
   const found = await lookupCase(input.caseNumber);
-  const token = randomBytes(32).toString("base64url");
   const lang = input.lang === "es" || input.lang === "en" ? input.lang : (found?.lang ?? "en");
-  const { error } = await client.from("casepath_visit_tokens").insert({
-    token_hash: tokenHash(token),
-    case_id: found?.caseId ?? null,
-    case_number: found?.caseNumber ?? input.caseNumber.trim(),
-    client_name: found?.clientName ?? null,
-    phone: cleanPhone(input.phone) ?? found?.phone ?? null,
-  });
-  if (error) throw new Error(error.message);
-  const url = `${publicSiteUrl}${withLang(path, lang, token)}`;
-  return { url, caseNumber: found?.caseNumber ?? input.caseNumber.trim(), clientName: found?.clientName ?? null };
+  const phone = cleanPhone(input.phone) ?? found?.phone ?? null;
+  const caseNumber = found?.caseNumber ?? input.caseNumber.trim();
+  const clientName = found?.clientName ?? null;
+  const caseId = found?.caseId ?? null;
+
+  let token = "";
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    token = newVisitToken();
+    if (!TOKEN.test(token)) continue;
+    const { error } = await client.from("casepath_visit_tokens").insert({
+      token_hash: tokenHash(token),
+      case_id: caseId,
+      case_number: caseNumber,
+      client_name: clientName,
+      phone,
+    });
+    if (!error) {
+      const url = `${publicSiteUrl}${withLang(path, lang, token)}`;
+      return { url, caseNumber, clientName };
+    }
+    if (!/duplicate|unique/i.test(error.message)) throw new Error(error.message);
+  }
+  throw new Error("Could not mint a unique visit token.");
 }
 
 export function tokenSecretMatches(header: string | null) {

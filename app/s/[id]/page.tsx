@@ -6,7 +6,7 @@ import { getLang, lines, text } from "@/lib/lang";
 import { siteOrigin } from "@/lib/origin";
 import { previewMeta, stagePreviewTitle } from "@/lib/preview";
 import type { Lang, Stage, Video } from "@/lib/types";
-import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
+import { latestRating, readVisitToken, recordPageView } from "@/lib/visit";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
   searchParams: Promise<{ t?: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const token = cleanToken((await searchParams).t);
+  const token = await readVisitToken((await searchParams).t);
   const [lang, stage, origin] = await Promise.all([getLang(), getStage(id), siteOrigin()]);
   if (!stage) return { title: lang === "es" ? "Tema no encontrado" : "Topic not found" };
   const pageTitle = text(lang, stage.headerEn, stage.headerEs) || text(lang, stage.labelEn, stage.labelEs);
@@ -44,7 +44,7 @@ export default async function StagePage({
   searchParams: Promise<{ t?: string }>;
 }) {
   const { id } = await params;
-  const token = cleanToken((await searchParams).t);
+  const token = await readVisitToken((await searchParams).t);
   const [lang, stages, stage, videos, brand] = await Promise.all([
     getLang(),
     listStages(),

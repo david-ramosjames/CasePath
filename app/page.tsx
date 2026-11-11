@@ -7,13 +7,13 @@ import { getBrand } from "@/lib/content";
 import { getLang } from "@/lib/lang";
 import { siteOrigin } from "@/lib/origin";
 import { previewMeta } from "@/lib/preview";
-import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
+import { latestRating, readVisitToken, recordPageView } from "@/lib/visit";
 import { withLang } from "@/lib/with-lang";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ t?: string }> }): Promise<Metadata> {
-  const token = cleanToken((await searchParams).t);
+  const token = await readVisitToken((await searchParams).t);
   const [lang, origin] = await Promise.all([getLang(), siteOrigin()]);
   const title = "CasePath | Ramos James Law";
   const description =
@@ -37,7 +37,7 @@ const copy = {
 };
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ t?: string }> }) {
-  const token = cleanToken((await searchParams).t);
+  const token = await readVisitToken((await searchParams).t);
   const [lang, brand] = await Promise.all([getLang(), getBrand()]);
   const text = copy[lang];
   const pageLabel = "CasePath home";
