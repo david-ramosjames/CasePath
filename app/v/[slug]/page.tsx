@@ -5,6 +5,7 @@ import { getBrand, getVideo, listStages, listVideos } from "@/lib/content";
 import { getLang, text } from "@/lib/lang";
 import { siteOrigin } from "@/lib/origin";
 import { previewMeta } from "@/lib/preview";
+import { cleanToken, latestRating, recordPageView } from "@/lib/visit";
 
 export const dynamic = "force-dynamic";
 
@@ -20,10 +21,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function VideoPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function VideoPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ t?: string }>;
+}) {
   const { slug } = await params;
+  const token = cleanToken((await searchParams).t);
   const [lang, stages, videos, brand] = await Promise.all([getLang(), listStages(), listVideos(), getBrand()]);
   const current = videos.find((video) => video.slug === slug);
   if (!current) notFound();
-  return <CaseView lang={lang} brand={brand} stages={stages} videos={videos} current={current} />;
+  const pagePath = `/v/${current.slug}`;
+  await recordPageView({ token, path: pagePath, label: current.titleEn, lang });
+  const initialStars = await latestRating(token, pagePath);
+  return (
+    <CaseView
+      lang={lang}
+      brand={brand}
+      stages={stages}
+      videos={videos}
+      current={current}
+      token={token}
+      initialStars={initialStars}
+    />
+  );
 }

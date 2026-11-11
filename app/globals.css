@@ -303,6 +303,65 @@ button.player {
   padding-bottom: calc(88px + env(safe-area-inset-bottom));
 }
 
+.experience {
+  margin: 8px 18px 0;
+  padding: 16px 16px 14px;
+  border: 1px solid #e3ebf2;
+  border-radius: 16px;
+  background: #f7fbfe;
+}
+
+.experience h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 1.05rem;
+}
+
+.experience p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.stars {
+  display: flex;
+  gap: 4px;
+  margin-top: 10px;
+}
+
+.star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: #c5d3e0;
+  cursor: pointer;
+}
+
+.star svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.star.on {
+  color: #e0a106;
+}
+
+.star:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.experience-error {
+  color: #9d1239;
+}
+
 .site-foot {
   display: flex;
   flex-direction: column;
@@ -1021,6 +1080,69 @@ button.player {
   max-width: 64rem;
 }
 
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.stat-row p {
+  margin: 0;
+  padding: 12px;
+  border: 1px solid #e3ebf2;
+  border-radius: 14px;
+  background: #f7fbfe;
+}
+
+.stat-row strong {
+  display: block;
+  color: var(--navy);
+  font-size: 1.6rem;
+}
+
+.stat-row span,
+.feedback-table span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.range-links {
+  display: flex;
+  gap: 12px;
+}
+
+.range-links a[aria-current="page"] {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.feedback-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.feedback-table th,
+.feedback-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #e3ebf2;
+  text-align: left;
+  vertical-align: top;
+}
+
+.feedback-table th {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 720px) {
+  .stat-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .editor-section {
   margin-top: 28px;
 }
@@ -1622,9 +1744,15 @@ legend {
     padding: 32px 16px 48px;
   }
 
+  .guide-page .experience,
   .guide-page .site-foot {
     width: min(1160px, calc(100% - 32px));
-    margin: 0 auto;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .guide-page .site-foot {
+    margin-top: 0;
     padding: 8px 0 32px;
   }
 

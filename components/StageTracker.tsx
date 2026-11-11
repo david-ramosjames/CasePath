@@ -8,10 +8,12 @@ export function StageTracker({
   lang,
   stages,
   viewingIndex,
+  token = null,
 }: {
   lang: Lang;
   stages: Stage[];
   viewingIndex: number;
+  token?: string | null;
 }) {
   const scroller = useRef<HTMLElement>(null);
   const [more, setMore] = useState(false);
@@ -58,7 +60,7 @@ export function StageTracker({
               <a
                 key={stage.id}
                 className={className}
-                href={withLang(`/s/${stage.id}`, lang)}
+                href={withLang(`/s/${stage.id}`, lang, token)}
                 aria-current={active ? "page" : undefined}
               >
                 <span className="num">{done ? "✓" : index + 1}</span>

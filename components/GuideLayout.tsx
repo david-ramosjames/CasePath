@@ -1,4 +1,5 @@
 import { ContactCard, telHref } from "@/components/ContactCard";
+import { ExperienceRating } from "@/components/ExperienceRating";
 import { FirmHeader } from "@/components/FirmHeader";
 import { MediaFrame } from "@/components/MediaFrame";
 import { NextSteps } from "@/components/NextSteps";
@@ -6,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { StageTracker } from "@/components/StageTracker";
 import { VideoCards } from "@/components/VideoCards";
 import type { Brand, Lang, Stage, Video } from "@/lib/types";
+import { withLang } from "@/lib/with-lang";
 
 function isStatusDisclaimer(question: string) {
   return /highlighted topic|tema resaltado/i.test(question);
@@ -28,12 +30,18 @@ export function GuideLayout({
   youtube,
   image,
   related,
+  token = null,
+  pageLabel,
+  initialStars = null,
 }: {
   lang: Lang;
   brand: Brand;
   stages: Stage[];
   viewingIndex: number;
   nextPath: string;
+  token?: string | null;
+  pageLabel: string;
+  initialStars?: number | null;
   title: string;
   summary: string;
   usually: string;
@@ -58,8 +66,8 @@ export function GuideLayout({
   return (
     <div className="client-page guide-page">
       <div className="pin">
-        <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={nextPath} />
-        <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} />
+        <FirmHeader firmName={brand.firmName} logoUrl={brand.logoUrl} lang={lang} nextPath={withLang(nextPath, "en", token)} />
+        <StageTracker lang={lang} stages={stages} viewingIndex={viewingIndex} token={token} />
       </div>
       <div className="guide-wrap">
         <main className="guide-main">
@@ -97,17 +105,18 @@ export function GuideLayout({
             </section>
           ) : null}
           <div className="related-mobile">
-            <VideoCards lang={lang} videos={related} heading={moreHeading} />
+            <VideoCards lang={lang} videos={related} heading={moreHeading} token={token} />
           </div>
           <div className="related-extra">
-            <VideoCards lang={lang} videos={below} heading={moreHeading} />
+            <VideoCards lang={lang} videos={below} heading={moreHeading} token={token} />
           </div>
         </main>
         <aside className="guide-side">
           <ContactCard lang={lang} phone={brand.phone} />
-          <VideoCards lang={lang} videos={related.slice(0, 2)} heading={moreHeading} />
+          <VideoCards lang={lang} videos={related.slice(0, 2)} heading={moreHeading} token={token} />
         </aside>
       </div>
+      <ExperienceRating lang={lang} token={token} pagePath={nextPath} pageLabel={pageLabel} initialStars={initialStars} />
       <SiteFooter lang={lang} />
       <div className="call-bar">
         <span className="call-icon" aria-hidden="true">

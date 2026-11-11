@@ -8,12 +8,16 @@ export function CaseView({
   stages,
   videos,
   current,
+  token = null,
+  initialStars = null,
 }: {
   lang: Lang;
   brand: Brand;
   stages: Stage[];
   videos: Video[];
   current: Video;
+  token?: string | null;
+  initialStars?: number | null;
 }) {
   const es = lang === "es";
   const viewingIndex = stages.findIndex((stage) => stage.id === current.stageId);
@@ -39,6 +43,9 @@ export function CaseView({
       youtube={es ? current.youtubeUrlEs || current.youtubeUrlEn : current.youtubeUrlEn || current.youtubeUrlEs}
       image={es ? current.imageUrlEs || current.imageUrlEn : current.imageUrlEn || current.imageUrlEs}
       related={related}
+      token={token}
+      pageLabel={current.titleEn}
+      initialStars={initialStars}
     />
   );
 }

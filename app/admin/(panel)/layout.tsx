@@ -17,6 +17,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <a className="header-button" href="/admin#page-links">
             Page links
           </a>
+          <a className="header-button" href="/admin/feedback">
+            Feedback
+          </a>
           <form action={signOut}>
             <button className="header-button" type="submit">
               Sign out
