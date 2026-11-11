@@ -309,6 +309,7 @@ button.player {
   border: 1px solid #e3ebf2;
   border-radius: 16px;
   background: #f7fbfe;
+  text-align: center;
 }
 
 .experience h2 {
@@ -325,6 +326,7 @@ button.player {
 
 .stars {
   display: flex;
+  justify-content: center;
   gap: 4px;
   margin-top: 10px;
 }
@@ -350,7 +352,7 @@ button.player {
 }
 
 .star.on {
-  color: #e0a106;
+  color: var(--pink);
 }
 
 .star:focus-visible {

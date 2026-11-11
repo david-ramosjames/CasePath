@@ -23,6 +23,7 @@ export function ExperienceRating({
 }) {
   const es = lang === "es";
   const [stars, setStars] = useState(initialStars);
+  const [hover, setHover] = useState<number | null>(null);
   const [pending, setPending] = useState<number | null>(null);
   const [error, setError] = useState("");
   const prompt = es ? "¿Cómo ha sido su experiencia con nosotros?" : "How has your experience with us been?";
@@ -51,10 +52,16 @@ export function ExperienceRating({
     <section className="experience" aria-labelledby="experience-prompt">
       <h2 id="experience-prompt">{prompt}</h2>
       <p>{stars ? (es ? "Gracias." : "Thank you.") : hint}</p>
-      <div className="stars" role="radiogroup" aria-label={prompt}>
+      <div
+        className="stars"
+        role="radiogroup"
+        aria-label={prompt}
+        onMouseLeave={() => setHover(null)}
+      >
         {labels[lang].map((name, index) => {
           const value = index + 1;
-          const on = stars != null && value <= stars;
+          const shown = hover ?? pending ?? stars;
+          const on = shown != null && value <= shown;
           return (
             <button
               key={name}
@@ -64,6 +71,9 @@ export function ExperienceRating({
               aria-label={name}
               className={on ? "star on" : "star"}
               disabled={pending != null}
+              onMouseEnter={() => setHover(value)}
+              onFocus={() => setHover(value)}
+              onBlur={() => setHover(null)}
               onClick={() => choose(value)}
             >
               <svg viewBox="0 0 24 24" aria-hidden="true">
