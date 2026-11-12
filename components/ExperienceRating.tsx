@@ -1,12 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { Lang } from "@/lib/types";
 
 const labels = {
   en: ["1 star", "2 stars", "3 stars", "4 stars", "5 stars"],
   es: ["1 estrella", "2 estrellas", "3 estrellas", "4 estrellas", "5 estrellas"],
 };
+
+function thanksFor(stars: number, es: boolean) {
+  if (es) {
+    if (stars <= 1) return "Lamentamos su experiencia. Nuestro equipo se comunicará para corregirlo.";
+    if (stars === 2) return "Gracias por hacérnoslo saber. Nuestro equipo dará seguimiento.";
+    if (stars === 3) return "Gracias. Valoramos su opinión.";
+    if (stars === 4) return "Gracias. Nos alegra poder ayudarle.";
+    return "Gracias. Agradecemos su confianza.";
+  }
+  if (stars <= 1) return "We're sorry. Our team will reach out to make this right.";
+  if (stars === 2) return "Thank you for telling us. Our team will follow up.";
+  if (stars === 3) return "Thank you. We appreciate your feedback.";
+  if (stars === 4) return "Thank you — we're glad we could help.";
+  return "Thank you. We're grateful for your trust.";
+}
 
 export function ExperienceRating({
   lang,
@@ -26,11 +41,14 @@ export function ExperienceRating({
   const [hover, setHover] = useState<number | null>(null);
   const [pending, setPending] = useState<number | null>(null);
   const [error, setError] = useState("");
+  const busy = useRef(false);
+  const locked = stars != null || pending != null;
   const prompt = es ? "¿Cómo ha sido su experiencia con nosotros?" : "How has your experience with us been?";
   const hint = es ? "Toque de 1 a 5 estrellas." : "Tap 1 to 5 stars.";
 
   async function choose(value: number) {
-    if (pending) return;
+    if (busy.current || stars != null) return;
+    busy.current = true;
     setPending(value);
     setError("");
     try {
@@ -42,6 +60,7 @@ export function ExperienceRating({
       if (!response.ok) throw new Error("save failed");
       setStars(value);
     } catch {
+      busy.current = false;
       setError(es ? "No se pudo guardar. Inténtelo de nuevo." : "That did not save. Please try again.");
     } finally {
       setPending(null);
@@ -51,7 +70,7 @@ export function ExperienceRating({
   return (
     <section className="experience" aria-labelledby="experience-prompt">
       <h2 id="experience-prompt">{prompt}</h2>
-      <p>{stars ? (es ? "Gracias." : "Thank you.") : hint}</p>
+      <p>{stars ? thanksFor(stars, es) : hint}</p>
       <div
         className="stars"
         role="radiogroup"
@@ -70,9 +89,13 @@ export function ExperienceRating({
               aria-checked={stars === value}
               aria-label={name}
               className={on ? "star on" : "star"}
-              disabled={pending != null}
-              onMouseEnter={() => setHover(value)}
-              onFocus={() => setHover(value)}
+              disabled={locked}
+              onMouseEnter={() => {
+                if (!locked) setHover(value);
+              }}
+              onFocus={() => {
+                if (!locked) setHover(value);
+              }}
               onBlur={() => setHover(null)}
               onClick={() => choose(value)}
             >
