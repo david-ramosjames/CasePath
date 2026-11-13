@@ -107,7 +107,12 @@ export default async function FeedbackDashboard({
       ) : null}
       {!slackReady ? (
         <p className="form-error">Slack alerts are off until SLACK_BOT_TOKEN and SLACK_FEEDBACK_CHANNEL_ID are set.</p>
-      ) : null}
+      ) : (
+        <p className="form-ok">
+          Ratings also post to the mapped case Slack channel when one exists. Sentiment Scout will join public channels
+          automatically; private channels still need a one-time invite.
+        </p>
+      )}
 
       <div className="stat-row">
         <p>
